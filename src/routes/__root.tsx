@@ -162,18 +162,20 @@ function RootCrosshair() {
   const isDark = theme === "dark";
 
   return (
-    <Crosshair
-      color={isDark ? "#c8f53c" : "#659300"}
-      coordinatesColor={isDark ? "#c8f53c" : "#659300"}
-      targetEffect="lock"
-      thickness={0.5}
-      opacity={isDark ? 0.4 : 0.8}
-      smoothing={0.15}
-      showCoordinates
-      lineStyle="dashed"
-      blendMode="normal"
-      gap={3}
-    />
+    <div className="hidden sm:block">
+      <Crosshair
+        color={isDark ? "#c8f53c" : "#659300"}
+        coordinatesColor={isDark ? "#c8f53c" : "#659300"}
+        targetEffect="lock"
+        thickness={0.5}
+        opacity={isDark ? 0.4 : 0.8}
+        smoothing={0.15}
+        showCoordinates
+        lineStyle="dashed"
+        blendMode="normal"
+        gap={3}
+      />
+    </div>
   );
 }
 

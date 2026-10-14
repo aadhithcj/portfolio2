@@ -34,7 +34,7 @@ function Projects() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="page-enter mx-auto grid max-w-5xl gap-10 px-6 pb-20 pt-10 md:grid-cols-[1fr_18rem]">
+      <main className="page-enter mx-auto grid max-w-5xl gap-10 px-5 pb-20 pt-8 sm:px-6 sm:pt-10 md:grid-cols-[1fr_18rem]">
         <ol>
           {projects.map((x, i) => (
             <li key={x.slug}>
@@ -44,7 +44,7 @@ function Projects() {
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 data-crosshair-target
-                className={`group grid grid-cols-[3rem_1fr_auto] items-baseline border-b py-4 transition-colors duration-200 hover:border-lime/60 ${
+                className={`group grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[3rem_1fr_auto] items-baseline border-b py-4 transition-colors duration-200 hover:border-lime/60 ${
                   active === i ? "border-lime/50 bg-surface/40" : "border-line"
                 }`}
               >
@@ -52,10 +52,10 @@ function Projects() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span
-                  className={`font-display text-4xl transition-all duration-200 md:text-6xl ${
+                  className={`break-words font-display text-3xl transition-all duration-200 sm:text-4xl md:text-6xl ${
                     active === i
-                      ? "translate-x-2 italic text-lime"
-                      : "group-hover:translate-x-2 group-hover:italic group-hover:text-lime"
+                      ? "translate-x-1 sm:translate-x-2 italic text-lime"
+                      : "group-hover:translate-x-1 sm:group-hover:translate-x-2 group-hover:italic group-hover:text-lime"
                   }`}
                 >
                   {x.name}

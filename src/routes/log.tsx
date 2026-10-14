@@ -120,7 +120,7 @@ function LogPage() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="page-enter mx-auto max-w-4xl px-6 pb-24 pt-12">
+      <main className="page-enter mx-auto max-w-4xl px-5 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
         <p className="label-mono">
           <DecryptedText
             text="# ARCHIVE // TIMELINE"
@@ -131,7 +131,7 @@ function LogPage() {
           />
         </p>
 
-        <h1 className="mt-4 font-display text-6xl leading-[1.05] sm:text-7xl md:text-8xl">
+        <h1 className="mt-4 break-words font-display text-5xl leading-[1.05] sm:text-7xl md:text-8xl">
           The Engineering <em className="italic text-lime not-italic">Log</em>.
         </h1>
 

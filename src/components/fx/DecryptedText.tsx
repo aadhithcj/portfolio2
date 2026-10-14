@@ -145,6 +145,14 @@ export default function DecryptedText({
   }, [text, shuffleText]);
 
   const triggerDecrypt = useCallback(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setDisplayText(text);
+      setIsDecrypted(true);
+      return;
+    }
     if (sequential) {
       orderRef.current = computeOrder(text.length);
       pointerRef.current = 0;
@@ -154,9 +162,16 @@ export default function DecryptedText({
     }
     setDirection("forward");
     setIsAnimating(true);
-  }, [sequential, computeOrder, text.length]);
+  }, [sequential, computeOrder, text]);
 
   const triggerReverse = useCallback(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setDisplayText(text);
+      return;
+    }
     if (sequential) {
       orderRef.current = computeOrder(text.length).slice().reverse();
       pointerRef.current = 0;
@@ -317,6 +332,13 @@ export default function DecryptedText({
   };
 
   const triggerHoverDecrypt = useCallback(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setDisplayText(text);
+      return;
+    }
     if (isAnimating) return;
 
     setRevealedIndices(new Set());

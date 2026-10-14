@@ -105,8 +105,8 @@ function Index() {
         <div className="my-auto py-8">
           <div className="w-full max-w-4xl">
             {/* Top row with subhead and square button triggering screen-wide big pulse */}
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 label-mono">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2 label-mono">
                 <DecryptedText
                   text="# software engineer"
                   speed={25}

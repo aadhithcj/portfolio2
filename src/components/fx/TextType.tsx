@@ -98,8 +98,14 @@ export default function TextType({
   }, [startOnVisible]);
 
   useEffect(() => {
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (showCursor && cursorRef.current) {
       gsap.set(cursorRef.current, { opacity: 1 });
+      if (prefersReducedMotion) return undefined;
+
       const tween = gsap.to(cursorRef.current, {
         opacity: 0,
         duration: cursorBlinkDuration,
@@ -115,6 +121,15 @@ export default function TextType({
   }, [showCursor, cursorBlinkDuration]);
 
   useEffect(() => {
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) {
+      setDisplayedText(textArray[0] ?? "");
+      return undefined;
+    }
+
     if (!isVisible) return undefined;
 
     let timeout: ReturnType<typeof setTimeout>;

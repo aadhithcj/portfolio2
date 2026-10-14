@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
+import TextType from "@/components/fx/TextType";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -14,6 +15,8 @@ export const Route = createFileRoute("/about")({
         property: "og:description",
         content: "Software engineering, backend, cloud and automation.",
       },
+      { property: "og:image", content: "/og-image.png" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
   }),
   component: About,
@@ -55,9 +58,16 @@ function About() {
     <div className="min-h-screen">
       <SiteHeader />
       <main className="page-enter mx-auto max-w-3xl px-6 pb-20 pt-12">
-        <p className="label-mono"># README.md</p>
+        <p className="label-mono">
+          <TextType
+            text="# README.md"
+            typingSpeed={30}
+            loop={false}
+            showCursor={false}
+          />
+        </p>
         <h1 className="mt-4 font-display text-6xl md:text-7xl">
-          Hi, I'm Aadhith.
+          Hi, I'm <em className="italic text-lime not-italic">Aadhith</em>.
         </h1>
         <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
           A Computer Science graduate with hands-on experience in full-stack
@@ -65,30 +75,44 @@ function About() {
           DevOps experience and I'm interested in software engineering, backend
           development, cloud technologies and automation.
         </p>
-        <h2 className="label-mono mt-16 mb-4">## toolbox</h2>
+        <h2 className="label-mono mb-4 mt-16">
+          <TextType
+            text="## toolbox"
+            typingSpeed={30}
+            loop={false}
+            showCursor={false}
+          />
+        </h2>
         <dl className="border-t border-line">
           {skills.map(([k, v]) => (
             <div
               key={k}
               className="grid gap-2 border-b border-line py-3 md:grid-cols-[9rem_1fr]"
             >
-              <dt className="font-mono text-xs text-lime pt-1">{k}</dt>
+              <dt className="pt-1 font-mono text-xs text-lime">{k}</dt>
               <dd>{v}</dd>
             </div>
           ))}
         </dl>
-        <h2 className="label-mono mt-16 mb-4">## log</h2>
+        <h2 className="label-mono mb-4 mt-16">
+          <TextType
+            text="## log"
+            typingSpeed={30}
+            loop={false}
+            showCursor={false}
+          />
+        </h2>
         <ol className="border-t border-line">
           {timeline.map(([d, t, n]) => (
             <li
               key={t}
               className="grid gap-2 border-b border-line py-4 md:grid-cols-[9rem_1fr]"
             >
-              <span className="font-mono text-xs text-muted-foreground pt-1">
+              <span className="pt-1 font-mono text-xs text-muted-foreground">
                 {d}
               </span>
               <div>
-                <p>{t}</p>
+                <p className="font-medium text-foreground">{t}</p>
                 <p className="text-sm text-muted-foreground">{n}</p>
               </div>
             </li>

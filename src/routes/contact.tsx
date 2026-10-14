@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
+import TextType from "@/components/fx/TextType";
 import { profile } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/contact")({
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/contact")({
         property: "og:description",
         content: "Get in touch with Aadhith C Joseph.",
       },
+      { property: "og:image", content: "/og-image.png" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
   }),
   component: Contact,
@@ -30,9 +33,16 @@ function Contact() {
     <div className="min-h-screen">
       <SiteHeader />
       <main className="page-enter mx-auto max-w-5xl px-6 pb-20 pt-16">
-        <p className="label-mono">contact / {profile.location}</p>
+        <p className="label-mono">
+          <TextType
+            text={`contact / ${profile.location}`}
+            typingSpeed={25}
+            loop={false}
+            showCursor={false}
+          />
+        </p>
         <h1 className="mt-4 font-display text-7xl md:text-9xl">
-          Let's build <em className="text-lime">something</em>.
+          Let's build <em className="italic text-lime">something</em>.
         </h1>
         <ul className="mt-16 border-t border-line">
           {links.map(([k, v, href]) => (
@@ -41,10 +51,10 @@ function Contact() {
                 href={href}
                 target={k === "email" ? undefined : "_blank"}
                 rel="noreferrer"
-                className="group flex items-baseline justify-between border-b border-line py-6"
+                className="cursor-target group flex items-baseline justify-between border-b border-line py-6 transition-colors hover:border-lime"
               >
                 <span className="label-mono">{k}</span>
-                <span className="font-display text-2xl group-hover:text-lime md:text-4xl">
+                <span className="font-display text-2xl transition-colors group-hover:italic group-hover:text-lime md:text-4xl">
                   {v} ↗
                 </span>
               </a>

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
+import TextType from "@/components/fx/TextType";
 import { projects } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/projects/")({
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/projects/")({
         property: "og:description",
         content: "A numbered archive of full-stack, DevOps and AI work.",
       },
+      { property: "og:image", content: "/og-image.png" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
   }),
   component: Projects,
@@ -38,12 +41,12 @@ function Projects() {
                 params={{ slug: x.slug }}
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
-                className="group grid grid-cols-[3rem_1fr_auto] items-baseline border-b border-line py-4"
+                className="cursor-target group grid grid-cols-[3rem_1fr_auto] items-baseline border-b border-line py-4 transition-colors hover:border-lime/60"
               >
                 <span className="font-mono text-xs text-lime">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="font-display text-4xl transition group-hover:translate-x-2 group-hover:italic md:text-6xl">
+                <span className="font-display text-4xl transition-all duration-200 group-hover:translate-x-2 group-hover:italic group-hover:text-lime md:text-6xl">
                   {x.name}
                 </span>
                 <span className="label-mono">{x.year}</span>
@@ -52,21 +55,40 @@ function Projects() {
           ))}
         </ol>
         <aside
-          className="sticky top-8 h-fit border border-line bg-surface p-5"
+          className="sticky top-8 h-fit border border-line bg-surface/85 p-5 shadow-lg backdrop-blur"
           aria-live="polite"
         >
-          <p className="label-mono">
-            preview / {String(active + 1).padStart(2, "0")}
+          <p className="label-mono flex items-center justify-between">
+            <span>preview / {String(active + 1).padStart(2, "0")}</span>
+            <span className="text-lime">●</span>
           </p>
-          <div className="my-5 grid aspect-square place-items-center border border-line font-display text-7xl text-lime">
+          <div className="my-5 grid aspect-square place-items-center border border-line bg-background/50 font-display text-7xl text-lime transition-transform duration-300">
             {p.name.slice(0, 2)}
           </div>
-          <p className="text-sm">{p.tagline}</p>
-          <p className="mt-4 font-mono text-xs text-muted-foreground">
+          <div className="min-h-12 text-sm text-foreground">
+            <TextType
+              key={p.slug}
+              text={p.tagline}
+              typingSpeed={25}
+              loop={false}
+              showCursor={true}
+              cursorCharacter="|"
+              className="text-sm leading-relaxed"
+            />
+          </div>
+          <p className="mt-4 border-t border-line/60 pt-3 font-mono text-xs text-muted-foreground">
             {p.stack.join(" · ")}
           </p>
+          <Link
+            to="/projects/$slug"
+            params={{ slug: p.slug }}
+            className="cursor-target mt-4 inline-flex items-center gap-2 font-mono text-xs text-lime transition-colors hover:underline"
+          >
+            view case study →
+          </Link>
         </aside>
       </main>
     </div>
   );
 }
+

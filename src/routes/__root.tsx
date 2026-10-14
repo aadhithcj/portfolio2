@@ -9,6 +9,8 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
+import { ThemeProvider } from "@/hooks/use-theme";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 import appCss from "../styles.css?url";
 
@@ -84,13 +86,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content: "Portfolio of software engineer Aadhith C Joseph.",
         },
         { name: "author", content: "Aadhith C Joseph" },
-        { property: "og:title", content: "Aadhith C Joseph" },
+        { property: "og:site_name", content: "Aadhith C Joseph" },
+        { property: "og:title", content: "Aadhith C Joseph — Software Engineer" },
         {
           property: "og:description",
-          content: "Portfolio of software engineer Aadhith C Joseph.",
+          content: "Portfolio of software engineer Aadhith C Joseph: full-stack, DevOps and applied AI.",
         },
         { property: "og:type", content: "website" },
-        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:image", content: "/og-image.png" },
+        { property: "og:image:secure_url", content: "/og-image.png" },
+        { property: "og:image:type", content: "image/png" },
+        { property: "og:image:width", content: "512" },
+        { property: "og:image:height", content: "512" },
+        { property: "og:image:alt", content: "Aadhith C Joseph" },
+        { name: "twitter:card", content: "summary" },
+        { name: "twitter:title", content: "Aadhith C Joseph — Software Engineer" },
+        {
+          name: "twitter:description",
+          content: "Portfolio of software engineer Aadhith C Joseph: full-stack, DevOps and applied AI.",
+        },
+        { name: "twitter:image", content: "/og-image.png" },
       ],
       links: [
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -107,7 +122,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           rel: "stylesheet",
           href: appCss,
         },
-        { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+        { rel: "icon", href: "/favicon.png", type: "image/png" },
+        { rel: "shortcut icon", href: "/favicon.png", type: "image/png" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       ],
     }),
     shellComponent: RootShell,
@@ -119,7 +136,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -135,9 +152,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <ThemeToggle fixed />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
+

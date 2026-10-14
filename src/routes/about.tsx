@@ -107,7 +107,7 @@ function About() {
                 key={hub.to}
                 to={hub.to}
                 data-crosshair-target
-                className="group flex items-center justify-between rounded-xl border border-line bg-surface/60 p-4 transition-all duration-200 hover:border-lime hover:bg-surface"
+                className="group flex items-center justify-between rounded-xl border border-line bg-surface/60 p-4 transition-all duration-200 hover:border-lime hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="grid size-9 place-items-center rounded-lg border border-line bg-background text-lime">
@@ -149,7 +149,7 @@ function About() {
             target="_blank"
             rel="noreferrer"
             data-crosshair-target
-            className="inline-flex items-center gap-1.5 self-start rounded-lg border border-lime bg-lime px-3.5 py-1.5 font-mono text-xs font-medium text-black transition-all hover:bg-lime/90 sm:self-auto"
+            className="inline-flex items-center gap-1.5 self-start rounded-lg border border-lime bg-lime px-3.5 py-1.5 font-mono text-xs font-medium text-black transition-all hover:bg-lime/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 sm:self-auto"
           >
             <span>Resume PDF</span>
             <ArrowUpRight className="size-3.5" />

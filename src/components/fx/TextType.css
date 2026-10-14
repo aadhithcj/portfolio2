@@ -1,5 +1,7 @@
 .text-type {
-  display: inline-block;
+  display: block;
+  width: 100%;
+  vertical-align: top;
   white-space: pre-wrap;
 }
 

@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import DecryptedText from "@/components/fx/DecryptedText";
 import TextType from "@/components/fx/TextType";
-import { Calendar, Tag, Milestone, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/log")({
   head: () => ({
@@ -116,82 +117,146 @@ const entries: LogEntry[] = [
   },
 ];
 
+function TimelineEntryItem({
+  item,
+  idx,
+}: {
+  item: (typeof entries)[number];
+  idx: number;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // If the user prefers reduced motion, make entries immediately visible without animation
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setIsVisible(true);
+      return;
+    }
+
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -40px 0px",
+      }
+    );
+
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`relative mb-14 last:mb-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+    >
+      {/* Dot indicator */}
+      <div
+        className={`absolute -left-[31px] top-1.5 grid size-4 place-items-center rounded-full border border-lime bg-background text-[8px] text-lime shadow-sm transition-all duration-500 ease-out sm:-left-[39px] ${
+          isVisible ? "scale-100 opacity-100" : "scale-50 opacity-0"
+        }`}
+      >
+        <span className="size-1.5 rounded-full bg-lime animate-ping" />
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 pb-2">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs font-semibold text-lime">
+            {item.period}
+          </span>
+          <span className="rounded-full border border-line bg-surface/80 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+            {item.category}
+          </span>
+        </div>
+        <span className="label-mono text-xs">
+          ENTRY // {String(idx + 1).padStart(2, "0")}
+        </span>
+      </div>
+
+      <h2 className="mt-3 font-display text-2xl text-foreground sm:text-3xl">
+        {item.title}
+      </h2>
+      <p className="mt-1 font-mono text-xs text-muted-foreground/90 sm:text-sm">
+        {item.role}
+      </p>
+
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+        {item.description}
+      </p>
+
+      <ul className="mt-4 flex flex-wrap gap-2">
+        {item.highlights.map((hl) => (
+          <li
+            key={hl}
+            className="flex items-center gap-1.5 rounded-md border border-line/60 bg-surface/50 px-2.5 py-1 font-mono text-xs text-foreground/80"
+          >
+            <span className="text-lime" aria-hidden="true">
+              ▹
+            </span>
+            <span>{hl}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function LogPage() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
       <main className="page-enter mx-auto max-w-4xl px-5 pb-20 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
-        <p className="label-mono">
-          <DecryptedText
-            text="# ARCHIVE // TIMELINE"
-            speed={25}
-            sequential
-            animateOn="view"
-            encryptedClassName="text-lime"
-          />
-        </p>
+        <header>
+          <p className="label-mono">
+            <DecryptedText
+              text="# ARCHIVE // TIMELINE"
+              speed={25}
+              sequential
+              animateOn="view"
+              encryptedClassName="text-lime"
+            />
+          </p>
 
-        <h1 className="mt-4 break-words font-display text-5xl leading-[1.05] sm:text-7xl md:text-8xl">
-          The Engineering <em className="italic text-lime not-italic">Log</em>.
-        </h1>
+          <h1 className="mt-4 break-words font-display text-5xl leading-[1.05] sm:text-7xl md:text-8xl">
+            The Engineering <em className="italic text-lime not-italic">Log</em>
+            .
+          </h1>
 
-        <div className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-          <TextType
-            text="Milestones, career transitions, competitive programming, and education in chronological sequence."
-            typingSpeed={14}
-            loop={false}
-            showCursor={true}
-            cursorCharacter="|"
-            className="font-mono text-sm leading-relaxed text-foreground/90 sm:text-base"
-          />
-        </div>
+          {/* Constant two-line container matching final state size */}
+          <div className="mt-6 max-w-xl h-[3.25rem] sm:h-[3.5rem]">
+            <TextType
+              text="Milestones, career transitions, competitive programming, and education in chronological sequence."
+              typingSpeed={14}
+              loop={false}
+              showCursor={true}
+              cursorCharacter="|"
+              className="block w-full font-mono text-sm leading-relaxed text-foreground/90 sm:text-base"
+            />
+          </div>
+        </header>
 
         {/* Timeline list */}
         <div className="relative mt-16 border-l border-line pl-6 sm:pl-8">
           {entries.map((item, idx) => (
-            <div key={item.title} className="relative mb-14 last:mb-0">
-              {/* Dot indicator */}
-              <div className="absolute -left-[31px] top-1.5 grid size-4 place-items-center rounded-full border border-lime bg-background text-[8px] text-lime shadow-sm sm:-left-[39px]">
-                <span className="size-1.5 rounded-full bg-lime animate-ping" />
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 pb-2">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs font-semibold text-lime">
-                    {item.period}
-                  </span>
-                  <span className="rounded-full border border-line bg-surface/80 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                    {item.category}
-                  </span>
-                </div>
-                <span className="label-mono text-xs">
-                  ENTRY // {String(idx + 1).padStart(2, "0")}
-                </span>
-              </div>
-
-              <h2 className="mt-3 font-display text-2xl text-foreground sm:text-3xl">
-                {item.title}
-              </h2>
-              <p className="mt-1 font-mono text-xs text-muted-foreground/90 sm:text-sm">
-                {item.role}
-              </p>
-
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                {item.description}
-              </p>
-
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {item.highlights.map((hl) => (
-                  <li
-                    key={hl}
-                    className="flex items-center gap-1.5 rounded-md border border-line/60 bg-surface/50 px-2.5 py-1 font-mono text-xs text-foreground/80"
-                  >
-                    <span className="text-lime">▹</span>
-                    <span>{hl}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <TimelineEntryItem key={item.title} item={item} idx={idx} />
           ))}
         </div>
 

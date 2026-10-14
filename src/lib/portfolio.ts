@@ -86,7 +86,7 @@ export const projects: Project[] = [
   },
   {
     slug: "crop-recommendation",
-    name: "Crop Recommender",
+    name: "Crop Recommendation",
     category: "AGRITECH / ML",
     repoUrl: "https://github.com/aadhithcj/roots",
     year: "2025",

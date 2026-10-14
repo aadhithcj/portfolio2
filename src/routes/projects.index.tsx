@@ -44,7 +44,7 @@ function Projects() {
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 data-crosshair-target
-                className={`group grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[3rem_1fr_auto] items-baseline border-b py-4 transition-colors duration-200 hover:border-lime/60 ${
+                className={`group grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[3rem_1fr_auto] items-baseline border-b py-4 transition-colors duration-200 hover:border-lime/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 rounded-sm ${
                   active === i ? "border-lime/50 bg-surface/40" : "border-line"
                 }`}
               >

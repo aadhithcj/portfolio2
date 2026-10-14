@@ -8,7 +8,7 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ThemeProvider, useTheme } from "@/hooks/use-theme";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Crosshair from "@/components/fx/Crosshair";
@@ -157,25 +157,57 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function useSupportsCrosshair(): boolean {
+  const [supported, setSupported] = useState(false);
+
+  useEffect(() => {
+    // Only enable crosshair when viewport width is >= 640px and a fine pointer (mouse/trackpad) exists.
+    // This avoids canvas rendering and pointer listeners on phones and touchscreen-only devices,
+    // while preserving it for touchscreen laptops with a trackpad or mouse.
+    const mql = window.matchMedia("(min-width: 640px) and (any-pointer: fine)");
+
+    const update = () => {
+      setSupported(mql.matches);
+    };
+
+    update();
+
+    if (typeof mql.addEventListener === "function") {
+      mql.addEventListener("change", update);
+      return () => {
+        mql.removeEventListener("change", update);
+      };
+    } else {
+      mql.addListener(update);
+      return () => {
+        mql.removeListener(update);
+      };
+    }
+  }, []);
+
+  return supported;
+}
+
 function RootCrosshair() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const supported = useSupportsCrosshair();
+
+  if (!supported) return null;
 
   return (
-    <div className="hidden sm:block">
-      <Crosshair
-        color={isDark ? "#c8f53c" : "#659300"}
-        coordinatesColor={isDark ? "#c8f53c" : "#659300"}
-        targetEffect="lock"
-        thickness={0.5}
-        opacity={isDark ? 0.4 : 0.8}
-        smoothing={0.15}
-        showCoordinates
-        lineStyle="dashed"
-        blendMode="normal"
-        gap={3}
-      />
-    </div>
+    <Crosshair
+      color={isDark ? "#c8f53c" : "#659300"}
+      coordinatesColor={isDark ? "#c8f53c" : "#659300"}
+      targetEffect="lock"
+      thickness={0.5}
+      opacity={isDark ? 0.4 : 0.8}
+      smoothing={0.15}
+      showCoordinates
+      lineStyle="dashed"
+      blendMode="normal"
+      gap={3}
+    />
   );
 }
 

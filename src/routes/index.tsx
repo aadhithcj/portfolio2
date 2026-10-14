@@ -167,8 +167,8 @@ function Index() {
               <em className="italic text-lime not-italic">systems</em>.
             </h1>
 
-            {/* Fast TextType animated bio - fixed two-line height so hero never shifts */}
-            <div className="mt-6 max-w-xl min-h-[48px] sm:min-h-[56px] text-base text-muted-foreground sm:text-lg">
+            {/* Fast TextType animated bio - constant two-line height matching final state */}
+            <div className="mt-6 max-w-xl h-[3.25rem] sm:h-[3.5rem]">
               <TextType
                 text="Full-stack, DevOps and applied AI. Computer Science graduate from Kerala."
                 typingSpeed={14}
@@ -176,7 +176,7 @@ function Index() {
                 loop={false}
                 showCursor={true}
                 cursorCharacter="|"
-                className="font-mono text-sm leading-relaxed text-foreground/90 sm:text-base"
+                className="block w-full font-mono text-sm leading-relaxed text-foreground/90 sm:text-base"
               />
             </div>
           </div>
@@ -189,7 +189,7 @@ function Index() {
               key={i.to}
               to={i.to}
               data-crosshair-target
-              className="group flex min-h-[58px] items-center justify-between gap-2 rounded-xl border border-transparent px-3 py-2 transition-all duration-200 hover:border-lime/40 hover:bg-surface/90 sm:min-h-[62px] sm:px-3"
+              className="group flex min-h-[58px] items-center justify-between gap-2 rounded-xl border border-transparent px-3 py-2 transition-all duration-200 hover:border-lime/40 hover:bg-surface/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 sm:min-h-[62px] sm:px-3"
             >
               <div className="flex items-center gap-2 shrink-0">
                 <span className="font-mono text-xs text-lime">{i.n}</span>

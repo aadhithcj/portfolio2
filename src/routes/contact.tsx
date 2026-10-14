@@ -237,7 +237,7 @@ function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     data-crosshair-target
-                    className="group flex flex-col py-4 transition-colors hover:border-lime"
+                    className="group flex flex-col rounded-md py-4 transition-colors hover:border-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2"
                   >
                     <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                       <span className="label-mono">{link.label}</span>
@@ -276,13 +276,15 @@ function Contact() {
                   <input
                     id="contact-name"
                     type="text"
+                    required
+                    aria-required="true"
                     placeholder="Alex"
                     data-crosshair-target
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                    className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none focus-visible:ring-1 focus-visible:ring-lime"
                   />
                 </div>
 
@@ -296,13 +298,15 @@ function Contact() {
                   <input
                     id="contact-email"
                     type="email"
+                    required
+                    aria-required="true"
                     placeholder="alex@domain.com"
                     data-crosshair-target
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
-                    className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                    className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none focus-visible:ring-1 focus-visible:ring-lime"
                   />
                 </div>
               </div>
@@ -323,7 +327,7 @@ function Contact() {
                   onChange={(e) =>
                     setFormData({ ...formData, subject: e.target.value })
                   }
-                  className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                  className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none focus-visible:ring-1 focus-visible:ring-lime"
                 />
               </div>
 
@@ -337,13 +341,15 @@ function Contact() {
                 <textarea
                   id="contact-message"
                   rows={2}
+                  required
+                  aria-required="true"
                   placeholder="Write your note or idea here..."
                   data-crosshair-target
                   value={formData.message}
                   onChange={(e) =>
                     setFormData({ ...formData, message: e.target.value })
                   }
-                  className="w-full resize-none rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                  className="w-full resize-none rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none focus-visible:ring-1 focus-visible:ring-lime"
                 />
               </div>
 
@@ -352,6 +358,9 @@ function Contact() {
                 {feedback && (
                   <div
                     role={feedback.type === "error" ? "alert" : "status"}
+                    aria-live={
+                      feedback.type === "error" ? "assertive" : "polite"
+                    }
                     className={cn(
                       "pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border px-3.5 py-1 font-mono text-[11px] font-medium shadow-2xl backdrop-blur-md transition-all duration-200 animate-in fade-in slide-in-from-bottom-2 zoom-in-95 z-30 flex items-center gap-1.5",
                       feedback.type === "error"

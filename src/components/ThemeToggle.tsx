@@ -102,6 +102,7 @@ export function ThemeToggle({
         {toast && (
           <div
             role="status"
+            aria-live="polite"
             className="pointer-events-none absolute -bottom-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-surface/95 px-3 py-1 font-mono text-[11px] font-medium text-foreground shadow-xl backdrop-blur-md transition-all duration-200 animate-in fade-in zoom-in-95 z-30"
           >
             <span className="mr-1 text-lime">◆</span>
@@ -117,7 +118,7 @@ export function ThemeToggle({
           onClick={handleToggle}
           data-crosshair-target
           aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-          className="group relative grid size-[54px] place-items-center rounded-full border border-line bg-surface/90 text-foreground shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-lime focus-visible:outline-2 focus-visible:outline-lime"
+          className="group relative grid size-[54px] place-items-center rounded-full border border-line bg-surface/90 text-foreground shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           {isDark ? (
             <Sun className="size-5 text-lime transition-transform duration-300 group-hover:rotate-45" />

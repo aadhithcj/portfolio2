@@ -239,9 +239,9 @@ function Contact() {
                     data-crosshair-target
                     className="group flex flex-col py-4 transition-colors hover:border-lime"
                   >
-                    <div className="flex items-baseline justify-between">
+                    <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                       <span className="label-mono">{link.label}</span>
-                      <span className="font-display text-2xl transition-colors group-hover:italic group-hover:text-lime sm:text-3xl">
+                      <span className="break-words font-display text-xl leading-tight transition-colors group-hover:italic group-hover:text-lime sm:text-2xl md:text-3xl">
                         {link.value} ↗
                       </span>
                     </div>
@@ -265,7 +265,7 @@ function Contact() {
             </div>
 
             <form onSubmit={handleSubmit} noValidate className="mt-4 space-y-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label
                     htmlFor="contact-name"

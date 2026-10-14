@@ -143,10 +143,10 @@ function Index() {
               </div>
             </div>
 
-            {/* Left-aligned Aadhith TechText */}
+            {/* Left-aligned Aadhith CJ. TechText */}
             <div className="relative -ml-1 h-24 w-full max-w-2xl sm:h-32 md:h-40">
               <TechText
-                text="Aadhith"
+                text="Aadhith CJ."
                 fontWeight={900}
                 fontSize={150}
                 align="left"
@@ -165,7 +165,7 @@ function Index() {
 
             {/* Headline */}
             <h1 className="mt-1 font-display text-4xl leading-[1.08] tracking-tight sm:text-5xl md:text-7xl">
-              turning ideas into{" "}
+              i turn ideas into{" "}
               <em className="italic text-lime not-italic">systems</em>.
             </h1>
 

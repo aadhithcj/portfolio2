@@ -128,13 +128,13 @@ function SkillsPage() {
                 key={cat.id}
                 edgeSensitivity={4}
                 glowColor="95 100 68"
-                backgroundColor="transparent"
+                backgroundColor="var(--surface)"
                 borderRadius={15}
                 glowRadius={22}
                 glowIntensity={1}
                 coneSpread={8}
                 colors={['#9fff5b', '#34d399', '#a3e635']}
-                className="border border-line bg-surface/75 p-6 backdrop-blur-md transition-shadow hover:shadow-xl"
+                className="border border-line bg-surface p-6 backdrop-blur-md transition-shadow hover:shadow-xl"
               >
                 <div className="flex items-center gap-3 border-b border-line/60 pb-4">
                   <div className="grid size-10 place-items-center rounded-lg border border-line bg-background/80 text-lime">

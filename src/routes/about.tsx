@@ -68,7 +68,7 @@ function About() {
           />
         </p>
         <h1 className="mt-4 font-display text-6xl md:text-7xl">
-          Hi, I'm <em className="italic text-lime not-italic">Aadhith</em>.
+          Hi, I'm <em className="italic text-lime not-italic">Aadhith CJ</em>.
         </h1>
         <p className="mt-8 text-lg leading-relaxed text-muted-foreground">
           A Computer Science graduate with hands-on experience in full-stack

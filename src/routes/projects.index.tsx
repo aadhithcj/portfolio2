@@ -61,13 +61,13 @@ function Projects() {
           <BorderGlow
             edgeSensitivity={4}
             glowColor="95 100 68"
-            backgroundColor="transparent"
+            backgroundColor="var(--surface)"
             borderRadius={15}
             glowRadius={22}
             glowIntensity={1}
             coneSpread={8}
             colors={['#9fff5b', '#4ade80', '#22c55e']}
-            className="border border-line bg-surface/90 p-5 shadow-xl backdrop-blur-md"
+            className="border border-line bg-surface p-5 shadow-xl backdrop-blur-md"
           >
             <p className="label-mono flex items-center justify-between">
               <DecryptedText
@@ -82,7 +82,7 @@ function Projects() {
               <span className="text-lime">●</span>
             </p>
 
-            <div className="my-5 grid aspect-square place-items-center border border-line bg-background/50 font-display text-7xl text-lime transition-transform duration-300">
+            <div className="relative z-10 my-5 grid aspect-square place-items-center rounded-lg border border-line bg-surface font-display text-7xl text-lime shadow-sm">
               {p.name.slice(0, 2)}
             </div>
 

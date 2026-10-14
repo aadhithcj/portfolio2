@@ -119,27 +119,32 @@ function Contact() {
         </div>
 
         {/* Two-column layout: Direct Links & Send Message Form */}
-        <div className="mt-16 grid items-start gap-10 lg:grid-cols-2">
-          {/* Direct channels */}
-          <div>
-            <h2 className="label-mono mb-4 text-xs tracking-wider">
-              <DecryptedText
-                text="# DIRECT CHANNELS"
-                speed={25}
-                sequential
-                animateOn="view"
-                encryptedClassName="text-lime"
-              />
-            </h2>
-            <ul className="border-t border-line">
+        <div className="mt-16 grid items-stretch gap-10 lg:grid-cols-2">
+          {/* Direct channels - styled to match right section height */}
+          <div className="flex flex-col justify-between rounded-xl border border-line bg-surface/60 p-5 backdrop-blur-md">
+            <div className="flex items-center justify-between border-b border-line/60 pb-3">
+              <h2 className="label-mono text-xs tracking-wider">
+                <DecryptedText
+                  text="# DIRECT CHANNELS"
+                  speed={25}
+                  sequential
+                  animateOn="view"
+                  encryptedClassName="text-lime"
+                />
+              </h2>
+              <span className="font-mono text-[10px] text-muted-foreground/70">
+                ACTIVE / MONITORED
+              </span>
+            </div>
+            <ul className="flex flex-1 flex-col justify-between divide-y divide-line">
               {links.map((link) => (
-                <li key={link.label}>
+                <li key={link.label} className="flex-1 flex flex-col justify-center">
                   <a
                     href={link.href}
                     target="_blank"
                     rel="noreferrer"
                     data-crosshair-target
-                    className="group flex flex-col border-b border-line py-4 transition-colors hover:border-lime"
+                    className="group flex flex-col py-4 transition-colors hover:border-lime"
                   >
                     <div className="flex items-baseline justify-between">
                       <span className="label-mono">{link.label}</span>

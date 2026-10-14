@@ -4,6 +4,7 @@ import TextType from "@/components/fx/TextType";
 import DecryptedText from "@/components/fx/DecryptedText";
 import { projects } from "@/lib/portfolio";
 import { RetinaCaseStudy } from "@/components/projects/RetinaCaseStudy";
+import { DevOpsHubCaseStudy } from "@/components/projects/DevOpsHubCaseStudy";
 
 export const Route = createFileRoute("/projects/$slug")({
   loader: ({ params }) => {
@@ -63,6 +64,8 @@ function ProjectPage() {
 
         {p.slug === "retina" ? (
           <RetinaCaseStudy project={p} previous={previous} next={next} />
+        ) : p.slug === "devopshub" ? (
+          <DevOpsHubCaseStudy project={p} previous={previous} next={next} />
         ) : (
           <>
             {/* Project introduction */}

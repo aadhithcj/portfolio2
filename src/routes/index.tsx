@@ -157,7 +157,7 @@ function Index() {
                 accentColor="#c8f53c"
                 selection={true}
                 labels={true}
-                draggable={true}
+                draggable={false}
               />
             </div>
 
@@ -167,8 +167,8 @@ function Index() {
               <em className="italic text-lime not-italic">systems</em>.
             </h1>
 
-            {/* Fast TextType animated bio */}
-            <div className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
+            {/* Fast TextType animated bio - fixed two-line height so hero never shifts */}
+            <div className="mt-6 max-w-xl min-h-[48px] sm:min-h-[56px] text-base text-muted-foreground sm:text-lg">
               <TextType
                 text="Full-stack, DevOps and applied AI. Computer Science graduate from Kerala."
                 typingSpeed={14}

@@ -109,7 +109,7 @@ export default function TechText({
   specks = 15,
   selection = true,
   labels = true,
-  draggable = true,
+  draggable = false,
   sweep = true,
   speed = 1,
   align = "center",

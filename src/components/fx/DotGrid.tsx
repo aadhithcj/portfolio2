@@ -735,7 +735,11 @@ export default function DotGrid({
     };
 
     const onBigPulse = (e: Event) => {
-      const custom = e as CustomEvent<{ x?: number; y?: number }>;
+      const custom = e as CustomEvent<{
+        x?: number;
+        y?: number;
+        speed?: number;
+      }>;
       const rect = canvas.getBoundingClientRect();
       const x =
         custom.detail?.x !== undefined
@@ -756,7 +760,7 @@ export default function DotGrid({
         start: performance.now(),
         radius: screenRadius,
         strength: 22,
-        travel: 1350,
+        travel: custom.detail?.speed ?? 3400,
       });
       if (shocks.length > 8) shocks.shift();
       wake();

@@ -3,14 +3,20 @@ import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import DecryptedText from "@/components/fx/DecryptedText";
 import { profile } from "@/lib/portfolio";
+import { cn } from "@/lib/utils";
 import {
   FileText,
   Send,
   CheckCircle2,
+  AlertCircle,
   Mail,
   ExternalLink,
   ArrowUpRight,
 } from "lucide-react";
+import {
+  Button as StatefulButton,
+  type ButtonStatus,
+} from "@/components/ui/stateful-button";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -41,17 +47,62 @@ function Contact() {
     subject: "",
     message: "",
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<ButtonStatus>("idle");
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=${encodeURIComponent(formData.subject || "Project Collaboration / Inquiry")}&body=${encodeURIComponent(
     `Hi Aadhith,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`
   )}`;
 
+  const validate = () => {
+    if (!formData.name.trim()) {
+      return { valid: false, message: "Please fill out your name." };
+    }
+    const email = formData.email.trim();
+    if (!email) {
+      return { valid: false, message: "Please fill out your email address." };
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        valid: false,
+        message: "Please enter a valid email address (e.g. alex@domain.com).",
+      };
+    }
+    if (!formData.message.trim()) {
+      return {
+        valid: false,
+        message: "Please write a message before sending.",
+      };
+    }
+    return { valid: true, message: "" };
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Open Gmail compose directly in new tab
-    window.open(gmailComposeUrl, "_blank", "noopener,noreferrer");
+    if (status === "loading") return;
+
+    setStatus("loading");
+
+    setTimeout(() => {
+      const validation = validate();
+      if (!validation.valid) {
+        setStatus("error");
+        setFeedback({ type: "error", message: validation.message });
+        setTimeout(() => setStatus("idle"), 2400);
+      } else {
+        setStatus("success");
+        setFeedback({
+          type: "success",
+          message: "Gmail compose opened in a new tab!",
+        });
+        window.open(gmailComposeUrl, "_blank", "noopener,noreferrer");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    }, 300);
   };
 
   const directGmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=Hello%20Aadhith`;
@@ -186,7 +237,7 @@ function Contact() {
               <Mail className="size-4 text-muted-foreground" />
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-4 space-y-3">
+            <form onSubmit={handleSubmit} noValidate className="mt-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label
@@ -198,7 +249,6 @@ function Contact() {
                   <input
                     id="contact-name"
                     type="text"
-                    required
                     placeholder="Alex"
                     data-crosshair-target
                     value={formData.name}
@@ -219,7 +269,6 @@ function Contact() {
                   <input
                     id="contact-email"
                     type="email"
-                    required
                     placeholder="alex@domain.com"
                     data-crosshair-target
                     value={formData.email}
@@ -260,7 +309,6 @@ function Contact() {
                 </label>
                 <textarea
                   id="contact-message"
-                  required
                   rows={2}
                   placeholder="Write your note or idea here..."
                   data-crosshair-target
@@ -272,21 +320,47 @@ function Contact() {
                 />
               </div>
 
-              <button
-                type="submit"
-                data-crosshair-target
-                className="group flex w-full items-center justify-center gap-2 rounded-md border border-lime bg-lime px-3 py-2 font-mono text-xs font-semibold text-black transition-all hover:bg-lime/90 hover:shadow-md"
-              >
-                <Send className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                <span>SEND MESSAGE VIA GMAIL</span>
-              </button>
+              <div className="relative">
+                {/* Floating toast hovering on top of the button */}
+                {feedback && (
+                  <div
+                    role={feedback.type === "error" ? "alert" : "status"}
+                    className={cn(
+                      "pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border px-3.5 py-1 font-mono text-[11px] font-medium shadow-2xl backdrop-blur-md transition-all duration-200 animate-in fade-in slide-in-from-bottom-2 zoom-in-95 z-30 flex items-center gap-1.5",
+                      feedback.type === "error"
+                        ? "border-red-500/60 bg-surface/95 text-red-400 dark:bg-zinc-950/95"
+                        : "border-lime/60 bg-surface/95 text-lime dark:bg-zinc-950/95"
+                    )}
+                  >
+                    {feedback.type === "error" ? (
+                      <span className="font-bold text-red-500">✕</span>
+                    ) : (
+                      <span className="font-bold text-lime">✓</span>
+                    )}
+                    <span>{feedback.message}</span>
+                    <span
+                      className={cn(
+                        "absolute -bottom-1 left-1/2 -translate-x-1/2 size-2 rotate-45 border-r border-b",
+                        feedback.type === "error"
+                          ? "border-red-500/60 bg-surface dark:bg-zinc-950"
+                          : "border-lime/60 bg-surface dark:bg-zinc-950"
+                      )}
+                    />
+                  </div>
+                )}
 
-              {submitted && (
-                <div className="flex items-center gap-2 rounded-md border border-lime/40 bg-lime/10 p-2.5 font-mono text-[11px] text-lime">
-                  <CheckCircle2 className="size-3.5 shrink-0" />
-                  <span>Gmail compose opened in a new tab!</span>
-                </div>
-              )}
+                <StatefulButton
+                  type="submit"
+                  status={status}
+                  data-crosshair-target
+                  icon={
+                    <Send className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  }
+                  className="w-full rounded-md bg-lime px-3 font-mono text-xs font-semibold text-black transition-all hover:bg-lime/90 hover:shadow-md"
+                >
+                  <span>SEND MESSAGE VIA GMAIL</span>
+                </StatefulButton>
+              </div>
             </form>
           </div>
         </div>

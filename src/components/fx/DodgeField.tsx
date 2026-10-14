@@ -1,16 +1,29 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { animate, motion, useMotionTemplate, useMotionValue, useReducedMotion } from 'motion/react';
-import './DodgeField.css';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import {
+  animate,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+} from "motion/react";
+import "./DodgeField.css";
 
 const COUNT_LINE = 0.55;
 const DEAD_ZONE = 6;
 const CAUGHT_HOLD_MS = 760;
 const INSET = 12;
-const DEFAULT_TAUNTS = ['Catch me', 'Nope', 'Too slow', 'Almost', 'Okay, okay'];
+const DEFAULT_TAUNTS = ["Catch me", "Nope", "Too slow", "Almost", "Okay, okay"];
 
-const wallIt = (t: number, room: number, wall: 'clamp' | 'bounce') => {
+const wallIt = (t: number, room: number, wall: "clamp" | "bounce") => {
   if (room <= 0) return t;
-  if (wall === 'bounce') {
+  if (wall === "bounce") {
     if (t > room) return Math.max(-room, 2 * room - t);
     if (t < -room) return Math.min(room, -2 * room - t);
     return t;
@@ -18,9 +31,14 @@ const wallIt = (t: number, room: number, wall: 'clamp' | 'bounce') => {
   return Math.min(room, Math.max(-room, t));
 };
 
-const bearingOf = (dx: number, dy: number, d: number, axis: 'both' | 'x' | 'y') => {
-  if (axis === 'x') return { x: Math.sign(dx) || 1, y: 0 };
-  if (axis === 'y') return { x: 0, y: Math.sign(dy) || 1 };
+const bearingOf = (
+  dx: number,
+  dy: number,
+  d: number,
+  axis: "both" | "x" | "y"
+) => {
+  if (axis === "x") return { x: Math.sign(dx) || 1, y: 0 };
+  if (axis === "y") return { x: 0, y: Math.sign(dy) || 1 };
   return { x: dx / d, y: dy / d };
 };
 
@@ -44,8 +62,8 @@ export interface DodgeFieldProps {
   fleeDuration?: number;
   returnDuration?: number;
   returnBounce?: number;
-  axis?: 'both' | 'x' | 'y';
-  wall?: 'clamp' | 'bounce';
+  axis?: "both" | "x" | "y";
+  wall?: "clamp" | "bounce";
   patience?: number;
   disabled?: boolean;
   onDodge?: (count: number) => void;
@@ -58,9 +76,9 @@ export interface DodgeFieldProps {
 export default function DodgeField({
   children,
   taunts = DEFAULT_TAUNTS,
-  notice = '',
-  inkColor = '#f5f5f5',
-  contrastColor = '#18181b',
+  notice = "",
+  inkColor = "#f5f5f5",
+  contrastColor = "#18181b",
   fieldHeight = 240,
   reach = 72,
   radius = 120,
@@ -68,15 +86,15 @@ export default function DodgeField({
   fleeDuration = 130,
   returnDuration = 620,
   returnBounce = 0.1,
-  axis = 'both',
-  wall = 'clamp',
+  axis = "both",
+  wall = "clamp",
   patience = 4,
   disabled = false,
   onDodge,
   onRelent,
   onCatch,
-  className = '',
-  style
+  className = "",
+  style,
 }: DodgeFieldProps) {
   const fieldRef = useRef<HTMLDivElement | null>(null);
   const moverRef = useRef<HTMLDivElement | null>(null);
@@ -108,7 +126,7 @@ export default function DodgeField({
     wall,
     still,
     inside,
-    reduce
+    reduce,
   });
   live.current = {
     reach,
@@ -121,7 +139,7 @@ export default function DodgeField({
     wall,
     still,
     inside,
-    reduce
+    reduce,
   };
 
   useEffect(() => {
@@ -131,7 +149,7 @@ export default function DodgeField({
     const measure = () => {
       room.current = {
         x: Math.max(0, (field.clientWidth - mover.offsetWidth) / 2 - INSET),
-        y: Math.max(0, (field.clientHeight - mover.offsetHeight) / 2 - INSET)
+        y: Math.max(0, (field.clientHeight - mover.offsetHeight) / 2 - INSET),
       };
     };
     measure();
@@ -158,24 +176,41 @@ export default function DodgeField({
       if (d < L.radius * COUNT_LINE) {
         if (armed.current) {
           armed.current = false;
-          setDodges(n => n + 1);
+          setDodges((n) => n + 1);
         }
       } else if (d > L.radius) {
         armed.current = true;
       }
     }
-    if (Number.isFinite(d) && d > DEAD_ZONE) bearing.current = bearingOf(dx, dy, d, L.axis);
+    if (Number.isFinite(d) && d > DEAD_ZONE)
+      bearing.current = bearingOf(dx, dy, d, L.axis);
     const flee = isInside && !L.still ? (1 - d / L.radius) ** L.falloff : 0;
-    const tx = wallIt(-bearing.current.x * flee * L.reach, room.current.x, L.wall);
-    const ty = wallIt(-bearing.current.y * flee * L.reach, room.current.y, L.wall);
+    const tx = wallIt(
+      -bearing.current.x * flee * L.reach,
+      room.current.x,
+      L.wall
+    );
+    const ty = wallIt(
+      -bearing.current.y * flee * L.reach,
+      room.current.y,
+      L.wall
+    );
     if (L.reduce) {
       x.jump(0);
       y.jump(0);
     } else {
       const cfg =
         flee > 0
-          ? { type: 'spring' as const, duration: L.fleeDuration / 1000, bounce: 0 }
-          : { type: 'spring' as const, duration: L.returnDuration / 1000, bounce: L.returnBounce };
+          ? {
+              type: "spring" as const,
+              duration: L.fleeDuration / 1000,
+              bounce: 0,
+            }
+          : {
+              type: "spring" as const,
+              duration: L.returnDuration / 1000,
+              bounce: L.returnBounce,
+            };
       animate(x, tx, cfg);
       animate(y, ty, cfg);
     }
@@ -183,33 +218,37 @@ export default function DodgeField({
   }, [x, y]);
 
   useEffect(() => {
-    const query = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
     const sync = () => setFine(query.matches);
     sync();
-    query.addEventListener('change', sync);
-    if (!query.matches || disabled) return () => query.removeEventListener('change', sync);
+    query.addEventListener("change", sync);
+    if (!query.matches || disabled)
+      return () => query.removeEventListener("change", sync);
     const tick = () => {
       if (!raf.current) raf.current = requestAnimationFrame(frame);
     };
     const onMove = (e: PointerEvent | MouseEvent) => {
-      if ('pointerType' in e && e.pointerType === 'touch') return;
+      if ("pointerType" in e && e.pointerType === "touch") return;
       pointer.current = { x: e.clientX, y: e.clientY };
       tick();
     };
     const onLeave = () => {
       pointer.current = null;
+      setCaught(false);
+      setDodges(0);
+      armed.current = true;
       tick();
     };
-    window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('scroll', tick, { passive: true, capture: true });
-    document.addEventListener('pointerleave', onLeave);
-    window.addEventListener('blur', onLeave);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", tick, { passive: true, capture: true });
+    document.addEventListener("pointerleave", onLeave);
+    window.addEventListener("blur", onLeave);
     return () => {
-      query.removeEventListener('change', sync);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('scroll', tick, { capture: true });
-      document.removeEventListener('pointerleave', onLeave);
-      window.removeEventListener('blur', onLeave);
+      query.removeEventListener("change", sync);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", tick, { capture: true });
+      document.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("blur", onLeave);
       cancelAnimationFrame(raf.current);
       raf.current = 0;
     };
@@ -232,27 +271,33 @@ export default function DodgeField({
   const handleClick = () => {
     setCaught(true);
     onCatch?.();
-    clearTimeout(hold.current);
-    hold.current = setTimeout(() => {
-      setCaught(false);
-      setDodges(0);
-      armed.current = false;
-    }, CAUGHT_HOLD_MS);
   };
 
-  const state: DodgeFieldState = { dodges, gave, caught, fleeing: inside && !still };
-  const index = gave || caught ? taunts.length - 1 : Math.min(dodges, Math.max(0, taunts.length - 2));
+  const state: DodgeFieldState = {
+    dodges,
+    gave,
+    caught,
+    fleeing: inside && !still,
+  };
+  const index =
+    gave || caught
+      ? taunts.length - 1
+      : Math.min(dodges, Math.max(0, taunts.length - 2));
   const content =
-    typeof children === 'function'
+    typeof children === "function"
       ? children(state)
       : (children ?? (
-          <button type="button" className="dodge-field__pill" aria-label={taunts[0]}>
+          <button
+            type="button"
+            className="dodge-field__pill"
+            aria-label={taunts[0]}
+          >
             <span className="dodge-field__labels">
               {taunts.map((taunt, i) => (
                 <span
                   key={`${taunt}-${i}`}
                   className="dodge-field__label"
-                  data-active={i === index ? 'true' : 'false'}
+                  data-active={i === index ? "true" : "false"}
                   aria-hidden="true"
                 >
                   {taunt}
@@ -265,23 +310,25 @@ export default function DodgeField({
   return (
     <div
       ref={fieldRef}
-      className={`dodge-field${className ? ` ${className}` : ''}`}
-      data-coarse={fine ? undefined : ''}
-      data-flat={reduce ? '' : undefined}
-      style={{
-        '--df-ink': inkColor,
-        '--df-contrast': contrastColor,
-        '--df-height': `${fieldHeight}px`,
-        ...style
-      } as CSSProperties}
+      className={`dodge-field${className ? ` ${className}` : ""}`}
+      data-coarse={fine ? undefined : ""}
+      data-flat={reduce ? "" : undefined}
+      style={
+        {
+          "--df-ink": inkColor,
+          "--df-contrast": contrastColor,
+          "--df-height": `${fieldHeight}px`,
+          ...style,
+        } as CSSProperties
+      }
     >
       <motion.div
         ref={moverRef}
         className="dodge-field__mover"
         style={{ transform }}
-        data-fled={inside && !still ? 'true' : 'false'}
-        data-relented={gave ? 'true' : 'false'}
-        data-caught={caught ? 'true' : 'false'}
+        data-fled={inside && !still ? "true" : "false"}
+        data-relented={gave ? "true" : "false"}
+        data-caught={caught ? "true" : "false"}
         onClick={handleClick}
       >
         {content}

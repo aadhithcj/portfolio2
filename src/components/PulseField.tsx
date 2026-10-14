@@ -18,7 +18,7 @@ export const PulseField = forwardRef<PulseHandle>(function PulseField(_, ref) {
     const ctx = c.getContext("2d");
     if (!ctx) return;
     const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
+      "(prefers-reduced-motion: reduce)"
     ).matches;
     const styles = getComputedStyle(document.documentElement);
     const fg = styles.getPropertyValue("--muted-foreground").trim();

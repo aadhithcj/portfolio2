@@ -9,7 +9,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
-import { ThemeProvider } from "@/hooks/use-theme";
+import { ThemeProvider, useTheme } from "@/hooks/use-theme";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Crosshair from "@/components/fx/Crosshair";
 
@@ -88,10 +88,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { name: "author", content: "Aadhith C Joseph" },
         { property: "og:site_name", content: "Aadhith C Joseph" },
-        { property: "og:title", content: "Aadhith C Joseph — Software Engineer" },
+        {
+          property: "og:title",
+          content: "Aadhith C Joseph — Software Engineer",
+        },
         {
           property: "og:description",
-          content: "Portfolio of software engineer Aadhith C Joseph: full-stack, DevOps and applied AI.",
+          content:
+            "Portfolio of software engineer Aadhith C Joseph: full-stack, DevOps and applied AI.",
         },
         { property: "og:type", content: "website" },
         { property: "og:image", content: "/og-image.png" },
@@ -101,10 +105,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:image:height", content: "512" },
         { property: "og:image:alt", content: "Aadhith C Joseph" },
         { name: "twitter:card", content: "summary" },
-        { name: "twitter:title", content: "Aadhith C Joseph — Software Engineer" },
+        {
+          name: "twitter:title",
+          content: "Aadhith C Joseph — Software Engineer",
+        },
         {
           name: "twitter:description",
-          content: "Portfolio of software engineer Aadhith C Joseph: full-stack, DevOps and applied AI.",
+          content:
+            "Portfolio of software engineer Aadhith C Joseph: full-stack, DevOps and applied AI.",
         },
         { name: "twitter:image", content: "/og-image.png" },
       ],
@@ -132,7 +140,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     component: RootComponent,
     notFoundComponent: NotFoundComponent,
     errorComponent: ErrorComponent,
-  },
+  }
 );
 
 function RootShell({ children }: { children: ReactNode }) {
@@ -149,6 +157,26 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function RootCrosshair() {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  return (
+    <Crosshair
+      color={isDark ? "#c8f53c" : "#659300"}
+      coordinatesColor={isDark ? "#c8f53c" : "#659300"}
+      targetEffect="lock"
+      thickness={0.5}
+      opacity={isDark ? 0.4 : 0.8}
+      smoothing={0.15}
+      showCoordinates
+      lineStyle="dashed"
+      blendMode="normal"
+      gap={3}
+    />
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -158,19 +186,8 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <ThemeToggle fixed />
-        <Crosshair
-          color="#9fff5b"
-          targetEffect="lock"
-          thickness={0.5}
-          opacity={0.4}
-          smoothing={0.15}
-          showCoordinates
-          lineStyle="dashed"
-          blendMode="difference"
-          gap={3}
-        />
+        <RootCrosshair />
       </QueryClientProvider>
     </ThemeProvider>
   );
 }
-

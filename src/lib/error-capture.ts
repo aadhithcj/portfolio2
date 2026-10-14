@@ -21,14 +21,14 @@ export function describeError(error: unknown): string {
   for (let depth = 0; depth < CAUSE_DEPTH_LIMIT && current != null; depth++) {
     if (!(current instanceof Error)) {
       parts.push(
-        typeof current === "string" ? current : safeStringify(current),
+        typeof current === "string" ? current : safeStringify(current)
       );
       break;
     }
     const label = depth === 0 ? "" : "caused by: ";
     const status = describeStatus(current);
     parts.push(
-      `${label}${current.stack ?? `${current.name}: ${current.message}`}${status}`,
+      `${label}${current.stack ?? `${current.name}: ${current.message}`}${status}`
     );
     current = current.cause;
   }
@@ -71,10 +71,10 @@ console.error = (...args: unknown[]) => {
 
 if (typeof globalThis.addEventListener === "function") {
   globalThis.addEventListener("error", (event) =>
-    record((event as ErrorEvent).error ?? event),
+    record((event as ErrorEvent).error ?? event)
   );
   globalThis.addEventListener("unhandledrejection", (event) =>
-    record((event as PromiseRejectionEvent).reason),
+    record((event as PromiseRejectionEvent).reason)
   );
 }
 

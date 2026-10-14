@@ -2,10 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const links = [
+  { to: "/about", label: "about" },
   { to: "/projects", label: "projects" },
   { to: "/skills", label: "skills" },
   { to: "/log", label: "log" },
-  { to: "/about", label: "about" },
   { to: "/contact", label: "contact" },
 ] as const;
 
@@ -17,7 +17,7 @@ export function SiteHeader() {
         data-crosshair-target
         className="font-mono text-sm text-foreground transition-colors hover:text-lime"
       >
-        <span className="text-lime">◆</span> aadhithcj
+        <span className="text-lime">◆</span> acj / portfolio
       </Link>
       <nav className="flex items-center gap-4 font-mono text-xs text-muted-foreground sm:text-sm md:gap-7">
         {links.map((l) => (

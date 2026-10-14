@@ -29,10 +29,11 @@ export const Route = createFileRoute("/")({
 });
 
 const nav = [
-  { to: "/projects", n: "01", label: "Projects", note: "Selected work" },
-  { to: "/skills", n: "02", label: "Skills", note: "Tech & tools" },
-  { to: "/log", n: "03", label: "Log", note: "Timeline" },
-  { to: "/contact", n: "04", label: "Contact", note: "Say hello" },
+  { to: "/about", n: "01", label: "About", note: "Bio" },
+  { to: "/projects", n: "02", label: "Projects", note: "Selected work" },
+  { to: "/skills", n: "03", label: "Skills", note: "Tech & tools" },
+  { to: "/log", n: "04", label: "Log", note: "Timeline" },
+  { to: "/contact", n: "05", label: "Contact", note: "Say hello" },
 ] as const;
 
 function Index() {
@@ -75,13 +76,13 @@ function Index() {
         />
       </div>
 
-      <div className="page-enter relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col justify-between px-6 py-8">
+      <div className="page-enter relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-between px-6 py-8">
         {/* Header bar */}
         <div className="flex items-center justify-between border-b border-line/60 pb-4 label-mono">
           <div className="flex items-center gap-3">
             <span className="inline-block size-2 animate-pulse rounded-full bg-lime" />
             <TextType
-              text={`${profile.handle} / portfolio`}
+              text="ACJ / PORTFOLIO"
               typingSpeed={16}
               loop={false}
               showCursor={false}
@@ -116,7 +117,7 @@ function Index() {
                 />
                 <span className="text-muted-foreground/60">•</span>
                 <DecryptedText
-                  text="interactive vector mark"
+                  text="AVAILABLE TO WORK"
                   speed={25}
                   sequential
                   animateOn="view"
@@ -137,14 +138,11 @@ function Index() {
                     ◆
                   </span>
                 </button>
-                <span className="hidden label-mono text-[10px] text-muted-foreground/80 sm:inline-block">
-                  screen pulse
-                </span>
               </div>
             </div>
 
             {/* Left-aligned Aadhith CJ. TechText */}
-            <div className="relative -ml-1 h-24 w-full max-w-2xl sm:h-32 md:h-40">
+            <div className="relative h-28 w-full max-w-3xl sm:h-36 md:h-44">
               <TechText
                 text="Aadhith CJ."
                 fontWeight={900}
@@ -184,33 +182,35 @@ function Index() {
           </div>
         </div>
 
-        {/* Bottom Navigation: expanded width (max-w-6xl) so every text fits on one line */}
-        <nav className="my-2 grid w-full rounded-2xl border border-line/80 bg-surface/50 p-2 shadow-lg backdrop-blur-md sm:grid-cols-2 lg:grid-cols-4 lg:gap-3 lg:p-3">
+        {/* Bottom Navigation: 5 items including About */}
+        <nav className="mb-1 sm:mb-1.5 grid w-full h-[76px] sm:h-[80px] grid-cols-2 lg:grid-cols-5 items-center gap-2 sm:gap-2.5 lg:gap-3.5 rounded-2xl border border-line/80 bg-surface/50 p-2 sm:p-2.5 shadow-lg backdrop-blur-md">
           {nav.map((i) => (
             <Link
               key={i.to}
               to={i.to}
               data-crosshair-target
-              className="group flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5 whitespace-nowrap transition-all duration-200 hover:border hover:border-lime/40 hover:bg-surface/90"
+              className="group flex h-[58px] sm:h-[62px] items-center justify-between gap-1.5 sm:gap-2 rounded-xl border border-transparent px-2.5 sm:px-3 transition-all duration-200 hover:border-lime/40 hover:bg-surface/90"
             >
-              <div className="flex items-baseline gap-2.5">
-                <span className="font-mono text-xs text-lime transition-transform duration-200 group-hover:translate-x-0.5">
-                  {i.n}
-                </span>
-                <span className="font-display text-xl transition-all group-hover:italic group-hover:text-lime sm:text-2xl">
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="font-mono text-xs text-lime">{i.n}</span>
+                <span className="font-display text-xl sm:text-[22px] text-foreground group-hover:text-lime transition-colors">
                   {i.label}
                 </span>
               </div>
-              <span className="label-mono text-[11px] transition-colors group-hover:text-foreground">
-                <DecryptedText
-                  text={`${i.note} →`}
-                  speed={25}
-                  sequential
-                  animateOn="hover"
-                  className="label-mono text-[11px]"
-                  encryptedClassName="text-lime"
-                />
-              </span>
+              <div className="flex items-center justify-end gap-1.5 ml-auto text-right shrink-0">
+                <span className="label-mono text-[9.5px] sm:text-[10px] tracking-wide uppercase text-muted-foreground group-hover:text-foreground transition-colors">
+                  <DecryptedText
+                    text={i.note}
+                    speed={25}
+                    sequential
+                    animateOn="hover"
+                    encryptedClassName="text-lime"
+                  />
+                </span>
+                <span className="font-mono text-xs text-muted-foreground group-hover:text-lime group-hover:translate-x-1 transition-all duration-200">
+                  →
+                </span>
+              </div>
             </Link>
           ))}
         </nav>

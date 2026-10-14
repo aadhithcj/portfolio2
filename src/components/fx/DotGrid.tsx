@@ -1,5 +1,5 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
-import './DotGrid.css';
+import { useEffect, useRef, type CSSProperties } from "react";
+import "./DotGrid.css";
 
 const VERTEX = `#version 300 es
 precision highp float;
@@ -93,12 +93,16 @@ void main() {
 const toRgb = (color: string): [number, number, number] => {
   const match = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(color).trim());
   if (!match) return [1, 1, 1];
-  const m = match[1] ?? 'ffffff';
-  const hex = m.length === 3 ? m.replace(/./g, digit => digit + digit) : m;
+  const m = match[1] ?? "ffffff";
+  const hex = m.length === 3 ? m.replace(/./g, (digit) => digit + digit) : m;
   const r = parseInt(hex.slice(0, 2), 16) / 255;
   const g = parseInt(hex.slice(2, 4), 16) / 255;
   const b = parseInt(hex.slice(4, 6), 16) / 255;
-  return [Number.isFinite(r) ? r : 1, Number.isFinite(g) ? g : 1, Number.isFinite(b) ? b : 1];
+  return [
+    Number.isFinite(r) ? r : 1,
+    Number.isFinite(g) ? g : 1,
+    Number.isFinite(b) ? b : 1,
+  ];
 };
 
 const smootherstep = (t: number) => {
@@ -135,7 +139,7 @@ export interface DotGridProps {
   swell?: number;
   stretch?: number;
   glow?: number;
-  shape?: 'circle' | 'square';
+  shape?: "circle" | "square";
   fade?: number;
   opacity?: number;
   intro?: boolean;
@@ -148,22 +152,22 @@ export interface DotGridProps {
 }
 
 type UniformKeys =
-  | 'uResolution'
-  | 'uSize'
-  | 'uSwell'
-  | 'uStretch'
-  | 'uGlow'
-  | 'uBase'
-  | 'uActive'
-  | 'uOpacity'
-  | 'uFade'
-  | 'uShape';
+  | "uResolution"
+  | "uSize"
+  | "uSwell"
+  | "uStretch"
+  | "uGlow"
+  | "uBase"
+  | "uActive"
+  | "uOpacity"
+  | "uFade"
+  | "uShape";
 
 export default function DotGrid({
   dotSize = 5,
   gap = 18,
-  baseColor = '#3a3446',
-  activeColor = '#ffffff',
+  baseColor = "#3a3446",
+  activeColor = "#ffffff",
   proximity = 140,
   strength = 1,
   bounce = 0.6,
@@ -174,7 +178,7 @@ export default function DotGrid({
   swell = 0.8,
   stretch = 0.5,
   glow = 0.5,
-  shape = 'circle',
+  shape = "circle",
   fade = 0,
   opacity = 1,
   intro = true,
@@ -182,11 +186,13 @@ export default function DotGrid({
   clickShock = true,
   paused = false,
   dpr,
-  className = '',
-  style
+  className = "",
+  style,
 }: DotGridProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const engineRef = useRef<{ rebuild: () => void; refresh: () => void } | null>(null);
+  const engineRef = useRef<{ rebuild: () => void; refresh: () => void } | null>(
+    null
+  );
   const settings = {
     dotSize,
     gap,
@@ -209,7 +215,7 @@ export default function DotGrid({
     mouseInteraction,
     clickShock,
     paused,
-    dpr
+    dpr,
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -217,7 +223,11 @@ export default function DotGrid({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
+    const gl = canvas.getContext("webgl2", {
+      alpha: true,
+      premultipliedAlpha: true,
+      antialias: false,
+    });
     if (!gl) return;
 
     const vShader = compile(gl, gl.VERTEX_SHADER, VERTEX);
@@ -232,16 +242,16 @@ export default function DotGrid({
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
 
     const uniformNames: UniformKeys[] = [
-      'uResolution',
-      'uSize',
-      'uSwell',
-      'uStretch',
-      'uGlow',
-      'uBase',
-      'uActive',
-      'uOpacity',
-      'uFade',
-      'uShape'
+      "uResolution",
+      "uSize",
+      "uSwell",
+      "uStretch",
+      "uGlow",
+      "uBase",
+      "uActive",
+      "uOpacity",
+      "uFade",
+      "uShape",
     ];
     const uniforms = new Map<UniformKeys, WebGLUniformLocation | null>();
     for (const name of uniformNames) {
@@ -252,7 +262,11 @@ export default function DotGrid({
     gl.bindVertexArray(vao);
     const cornerBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, cornerBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+      gl.STATIC_DRAW
+    );
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     const instanceBuffer = gl.createBuffer();
@@ -265,9 +279,19 @@ export default function DotGrid({
     gl.vertexAttribDivisor(2, 1);
     gl.bindVertexArray(null);
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
     const view = { width: 0, height: 0, left: 0, top: 0, ratio: 1 };
-    const grid = { count: 0, cols: 1, rows: 1, cell: 1, centerX: 0, centerY: 0, reach: 1 };
+    const grid = {
+      count: 0,
+      cols: 1,
+      rows: 1,
+      cell: 1,
+      centerX: 0,
+      centerY: 0,
+      reach: 1,
+    };
     let rest = new Float32Array(0);
     let offset = new Float32Array(0);
     let velocity = new Float32Array(0);
@@ -276,9 +300,25 @@ export default function DotGrid({
     let wave = new Float32Array(0);
     let energy = new Float32Array(0);
     let instances = new Float32Array(0);
-    const pointer = { x: 0, y: 0, vx: 0, vy: 0, time: 0, inside: false, presence: 0 };
-    const shocks: { x: number; y: number; start: number; radius?: number; strength?: number; travel?: number }[] = [];
-    let introStart: number | null = settingsRef.current.intro && !reduced ? -1 : null;
+    const pointer = {
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      time: 0,
+      inside: false,
+      presence: 0,
+    };
+    const shocks: {
+      x: number;
+      y: number;
+      start: number;
+      radius?: number;
+      strength?: number;
+      travel?: number;
+    }[] = [];
+    let introStart: number | null =
+      settingsRef.current.intro && !reduced ? -1 : null;
     let visible = true;
     let raf = 0;
     let last = 0;
@@ -313,7 +353,7 @@ export default function DotGrid({
         cell,
         centerX: view.width / 2,
         centerY: view.height / 2,
-        reach: Math.hypot(view.width, view.height) / 2
+        reach: Math.hypot(view.width, view.height) / 2,
       });
       gl.bindBuffer(gl.ARRAY_BUFFER, instanceBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, instances.byteLength, gl.DYNAMIC_DRAW);
@@ -322,7 +362,12 @@ export default function DotGrid({
     const render = (now: number) => {
       const s = settingsRef.current;
       const radius = Math.max(1, s.proximity);
-      const introAge = introStart === null ? Infinity : introStart < 0 ? 0 : (now - introStart) / 1000;
+      const introAge =
+        introStart === null
+          ? Infinity
+          : introStart < 0
+            ? 0
+            : (now - introStart) / 1000;
       const introFront = introAge * grid.reach * 1.25;
       const introBand = grid.cell * 4;
       for (let i = 0; i < grid.count; i++) {
@@ -345,12 +390,18 @@ export default function DotGrid({
         if (pointer.presence > 0.001) {
           const distance = Math.hypot(x - pointer.x, y - pointer.y);
           if (distance < radius)
-            glowing = Math.max(glowing, smootherstep(1 - distance / radius) * 0.4 * pointer.presence);
+            glowing = Math.max(
+              glowing,
+              smootherstep(1 - distance / radius) * 0.4 * pointer.presence
+            );
         }
         let scale = 1;
         if (introStart !== null) {
           const distance = Math.hypot(rx - grid.centerX, ry - grid.centerY);
-          const appear = Math.min(1, Math.max(0, (introFront - distance) / introBand));
+          const appear = Math.min(
+            1,
+            Math.max(0, (introFront - distance) / introBand)
+          );
           scale = appear >= 1 ? 1 : Math.max(0, backOut(appear));
           glowing = Math.max(glowing, Math.sin(appear * Math.PI) * 0.6);
         }
@@ -370,16 +421,22 @@ export default function DotGrid({
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.useProgram(program);
-      gl.uniform2f(uniforms.get('uResolution')!, view.width, view.height);
-      gl.uniform1f(uniforms.get('uSize')!, Math.max(0.5, s.dotSize));
-      gl.uniform1f(uniforms.get('uSwell')!, reduced ? 0 : Math.max(0, s.swell));
-      gl.uniform1f(uniforms.get('uStretch')!, reduced ? 0 : Math.max(0, s.stretch));
-      gl.uniform1f(uniforms.get('uGlow')!, Math.max(0, s.glow));
-      gl.uniform3f(uniforms.get('uBase')!, br, bg, bb);
-      gl.uniform3f(uniforms.get('uActive')!, ar, ag, ab);
-      gl.uniform1f(uniforms.get('uOpacity')!, Math.min(1, Math.max(0, s.opacity)));
-      gl.uniform1f(uniforms.get('uFade')!, Math.min(1, Math.max(0, s.fade)));
-      gl.uniform1i(uniforms.get('uShape')!, s.shape === 'square' ? 1 : 0);
+      gl.uniform2f(uniforms.get("uResolution")!, view.width, view.height);
+      gl.uniform1f(uniforms.get("uSize")!, Math.max(0.5, s.dotSize));
+      gl.uniform1f(uniforms.get("uSwell")!, reduced ? 0 : Math.max(0, s.swell));
+      gl.uniform1f(
+        uniforms.get("uStretch")!,
+        reduced ? 0 : Math.max(0, s.stretch)
+      );
+      gl.uniform1f(uniforms.get("uGlow")!, Math.max(0, s.glow));
+      gl.uniform3f(uniforms.get("uBase")!, br, bg, bb);
+      gl.uniform3f(uniforms.get("uActive")!, ar, ag, ab);
+      gl.uniform1f(
+        uniforms.get("uOpacity")!,
+        Math.min(1, Math.max(0, s.opacity))
+      );
+      gl.uniform1f(uniforms.get("uFade")!, Math.min(1, Math.max(0, s.fade)));
+      gl.uniform1i(uniforms.get("uShape")!, s.shape === "square" ? 1 : 0);
       gl.bindVertexArray(vao);
       gl.bindBuffer(gl.ARRAY_BUFFER, instanceBuffer);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, instances);
@@ -389,10 +446,19 @@ export default function DotGrid({
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const ratio = Math.min(settingsRef.current.dpr ?? window.devicePixelRatio ?? 1, 2);
+      const ratio = Math.min(
+        settingsRef.current.dpr ?? window.devicePixelRatio ?? 1,
+        2
+      );
       const width = Math.max(1, Math.round(rect.width));
       const height = Math.max(1, Math.round(rect.height));
-      Object.assign(view, { width, height, left: rect.left, top: rect.top, ratio });
+      Object.assign(view, {
+        width,
+        height,
+        left: rect.left,
+        top: rect.top,
+        ratio,
+      });
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
       rebuild();
@@ -408,23 +474,37 @@ export default function DotGrid({
       const damping = 2 * zeta * omega;
       const radius = Math.max(1, s.proximity);
       const speed = Math.hypot(pointer.vx, pointer.vy);
-      const drive = s.mouseInteraction && pointer.inside ? 6500 * Math.tanh(speed / 900) * s.strength * motion : 0;
+      const drive =
+        s.mouseInteraction && pointer.inside
+          ? 6500 * Math.tanh(speed / 900) * s.strength * motion
+          : 0;
       const dirX = speed > 0.001 ? pointer.vx / speed : 0;
       const dirY = speed > 0.001 ? pointer.vy / speed : 0;
       const width = grid.cell * 1.4;
       const defaultTravel = 650;
-      const active = shocks.map(shock => {
+      const active = shocks.map((shock) => {
         const travel = shock.travel ?? defaultTravel;
         const maxRadius = shock.radius ?? s.shockRadius;
         const strength = shock.strength ?? s.shockStrength;
         const front = ((now - shock.start) / 1000) * travel;
         const power = smootherstep(1 - front / Math.max(1, maxRadius));
-        return { ...shock, front, amplitude: power * strength * grid.cell * 0.28 * motion, maxRadius, travel };
+        return {
+          ...shock,
+          front,
+          amplitude: power * strength * grid.cell * 0.28 * motion,
+          maxRadius,
+          travel,
+        };
       });
-      const coupling = (Math.max(0, s.tension) * 900) ** 2 / (grid.cell * grid.cell);
+      const coupling =
+        (Math.max(0, s.tension) * 900) ** 2 / (grid.cell * grid.cell);
       const viscosity = Math.sqrt(coupling) * 0.06;
-      const limit = Math.sqrt(stiffness + 8 * coupling) + damping + 8 * viscosity;
-      const steps = Math.min(24, Math.max(1, Math.ceil(dt / Math.min(1 / 120, 1.2 / limit))));
+      const limit =
+        Math.sqrt(stiffness + 8 * coupling) + damping + 8 * viscosity;
+      const steps = Math.min(
+        24,
+        Math.max(1, Math.ceil(dt / Math.min(1 / 120, 1.2 / limit)))
+      );
       const h = dt / steps;
       for (let i = 0; i < grid.count; i++) {
         const index = i * 2;
@@ -461,7 +541,8 @@ export default function DotGrid({
             const ny = ey / distance;
             const profile = Math.exp(-u * u);
             const push = shock.amplitude * profile;
-            const rate = ((shock.amplitude * 2 * u * profile) / width) * shock.travel;
+            const rate =
+              ((shock.amplitude * 2 * u * profile) / width) * shock.travel;
             wx += nx * push;
             wy += ny * push;
             wvx += nx * rate;
@@ -564,7 +645,8 @@ export default function DotGrid({
       pointer.vx -= pointer.vx * decay;
       pointer.vy -= pointer.vy * decay;
       const presenceTarget = s.mouseInteraction && pointer.inside ? 1 : 0;
-      pointer.presence += (presenceTarget - pointer.presence) * (1 - Math.exp(-dt / 0.2));
+      pointer.presence +=
+        (presenceTarget - pointer.presence) * (1 - Math.exp(-dt / 0.2));
     };
 
     const settled = (now: number) => {
@@ -574,7 +656,8 @@ export default function DotGrid({
         introStart = null;
       }
       if (Math.abs(pointer.vx) + Math.abs(pointer.vy) > 1) return false;
-      const presenceTarget = settingsRef.current.mouseInteraction && pointer.inside ? 1 : 0;
+      const presenceTarget =
+        settingsRef.current.mouseInteraction && pointer.inside ? 1 : 0;
       if (Math.abs(presenceTarget - pointer.presence) > 0.002) return false;
       for (let i = 0; i < offset.length; i++) {
         const off = offset[i] ?? 0;
@@ -654,9 +737,19 @@ export default function DotGrid({
     const onBigPulse = (e: Event) => {
       const custom = e as CustomEvent<{ x?: number; y?: number }>;
       const rect = canvas.getBoundingClientRect();
-      const x = custom.detail?.x !== undefined ? custom.detail.x - rect.left : view.width / 2;
-      const y = custom.detail?.y !== undefined ? custom.detail.y - rect.top : view.height / 2;
-      const screenRadius = Math.hypot(view.width || window.innerWidth, view.height || window.innerHeight) * 1.6;
+      const x =
+        custom.detail?.x !== undefined
+          ? custom.detail.x - rect.left
+          : view.width / 2;
+      const y =
+        custom.detail?.y !== undefined
+          ? custom.detail.y - rect.top
+          : view.height / 2;
+      const screenRadius =
+        Math.hypot(
+          view.width || window.innerWidth,
+          view.height || window.innerHeight
+        ) * 1.6;
       shocks.push({
         x,
         y,
@@ -669,11 +762,11 @@ export default function DotGrid({
       wake();
     };
 
-    window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('pointerdown', onDown, { passive: true });
-    window.addEventListener('pointerout', onOut);
-    window.addEventListener('blur', onLeave);
-    window.addEventListener('dotgrid:bigpulse', onBigPulse);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerout", onOut);
+    window.addEventListener("blur", onLeave);
+    window.addEventListener("dotgrid:bigpulse", onBigPulse);
 
     const resizeObserver = new ResizeObserver(() => {
       resize();
@@ -697,7 +790,7 @@ export default function DotGrid({
         wake();
       }
     };
-    document.addEventListener('visibilitychange', onVisibility);
+    document.addEventListener("visibilitychange", onVisibility);
 
     resize();
     wake();
@@ -711,19 +804,19 @@ export default function DotGrid({
       refresh: () => {
         render(performance.now());
         wake();
-      }
+      },
     };
 
     return () => {
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerdown', onDown);
-      window.removeEventListener('pointerout', onOut);
-      window.removeEventListener('blur', onLeave);
-      window.removeEventListener('dotgrid:bigpulse', onBigPulse);
-      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerout", onOut);
+      window.removeEventListener("blur", onLeave);
+      window.removeEventListener("dotgrid:bigpulse", onBigPulse);
+      document.removeEventListener("visibilitychange", onVisibility);
       gl.deleteBuffer(cornerBuffer);
       gl.deleteBuffer(instanceBuffer);
       gl.deleteVertexArray(vao);
@@ -738,7 +831,19 @@ export default function DotGrid({
 
   useEffect(() => {
     engineRef.current?.refresh();
-  }, [baseColor, activeColor, swell, stretch, glow, shape, fade, opacity, paused, proximity, mouseInteraction]);
+  }, [
+    baseColor,
+    activeColor,
+    swell,
+    stretch,
+    glow,
+    shape,
+    fade,
+    opacity,
+    paused,
+    proximity,
+    mouseInteraction,
+  ]);
 
   return (
     <div className={`dot-grid ${className}`.trim()} style={style}>

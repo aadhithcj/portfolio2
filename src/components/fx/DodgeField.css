@@ -58,11 +58,11 @@
   }
 }
 
-.dodge-field__mover[data-relented='true'] .dodge-field__pill {
+.dodge-field__mover[data-relented="true"] .dodge-field__pill {
   color: var(--df-ink);
 }
 
-.dodge-field__mover[data-caught='true'] .dodge-field__pill {
+.dodge-field__mover[data-caught="true"] .dodge-field__pill {
   background: var(--df-ink);
   color: var(--df-contrast);
 }
@@ -79,7 +79,7 @@
     filter 200ms ease;
 }
 
-.dodge-field__label[data-active='false'] {
+.dodge-field__label[data-active="false"] {
   opacity: 0;
   filter: blur(2px);
 }

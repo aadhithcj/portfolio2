@@ -14,9 +14,36 @@ export type Project = {
   stack: string[];
   tagline: string;
   points: string[];
+  researchPaper?: {
+    title: string;
+    conference: string;
+    location: string;
+    dates: string;
+    description: string;
+  };
 };
 
 export const projects: Project[] = [
+  {
+    slug: "retina",
+    name: "Retina",
+    year: "2026",
+    stack: ["Kotlin", "Android", "Computer Vision"],
+    tagline: "An AI assistive Android system for visually impaired users.",
+    points: [
+      "Developed an assistive Android application using object detection, OCR, currency recognition and audio feedback.",
+      "Developed obstacle detection and navigation functionality using computer vision and machine learning.",
+    ],
+    researchPaper: {
+      title: "Retina: An AI Powered Assistive System for the Visually Impaired",
+      conference:
+        "ICFISN 2026 (International Conference on Frontiers in Intelligent Systems & Networks)",
+      location: "Sree Buddha College of Engineering, Alappuzha",
+      dates: "March 24–25, 2026",
+      description:
+        "Co-authored and presented research detailing the architecture and performance of multiple on-device ML models for accessibility.",
+    },
+  },
   {
     slug: "devopshub",
     name: "DevOpsHub",
@@ -35,17 +62,6 @@ export const projects: Project[] = [
       "Built and containerised a full-stack Flask, React and PostgreSQL application using Docker Compose.",
       "Implemented Git workflows, automated testing and frontend builds with GitHub Actions.",
       "Configured CI/CD with environment-based configuration and secure secrets management.",
-    ],
-  },
-  {
-    slug: "retina",
-    name: "RETINA",
-    year: "2026",
-    stack: ["Kotlin", "Android", "Computer Vision"],
-    tagline: "An AI assistive Android system for visually impaired users.",
-    points: [
-      "Developed an assistive Android application using object detection, OCR, currency recognition and audio feedback.",
-      "Developed obstacle detection and navigation functionality using computer vision and machine learning.",
     ],
   },
   {

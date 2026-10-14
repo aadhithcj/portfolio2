@@ -3,7 +3,14 @@ import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import DecryptedText from "@/components/fx/DecryptedText";
 import { profile } from "@/lib/portfolio";
-import { FileText, Send, CheckCircle2, Mail, ExternalLink, ArrowUpRight } from "lucide-react";
+import {
+  FileText,
+  Send,
+  CheckCircle2,
+  Mail,
+  ExternalLink,
+  ArrowUpRight,
+} from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -11,12 +18,14 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact — Aadhith C Joseph" },
       {
         name: "description",
-        content: "Email, GitHub, LinkedIn and direct contact for Aadhith C Joseph.",
+        content:
+          "Email, GitHub, LinkedIn and direct contact for Aadhith C Joseph.",
       },
       { property: "og:title", content: "Contact — Aadhith C Joseph" },
       {
         property: "og:description",
-        content: "Get in touch with Aadhith C Joseph: full-stack, DevOps and applied AI.",
+        content:
+          "Get in touch with Aadhith C Joseph: full-stack, DevOps and applied AI.",
       },
       { property: "og:image", content: "/og-image.png" },
       { name: "twitter:image", content: "/og-image.png" },
@@ -86,11 +95,14 @@ function Contact() {
         </p>
 
         <h1 className="mt-4 font-display text-6xl leading-[1.05] sm:text-7xl md:text-9xl">
-          Let's build <em className="italic text-lime not-italic">something</em>.
+          Let's build <em className="italic text-lime not-italic">something</em>
+          .
         </h1>
 
         <p className="mt-6 max-w-2xl font-mono text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Available for software engineering roles, DevOps automation, full-stack systems, or consulting. Drop a message below or reach out directly.
+          Available for software engineering roles, DevOps automation,
+          full-stack systems, or consulting. Drop a message below or reach out
+          directly.
         </p>
 
         {/* Resume Card */}
@@ -100,7 +112,7 @@ function Contact() {
               <FileText className="size-6" />
             </div>
             <div>
-              <p className="font-display text-xl sm:text-2xl">Curriculum Vitae / Resume</p>
+              <p className="font-display text-xl sm:text-2xl">Resume</p>
               <p className="font-mono text-xs text-muted-foreground">
                 PDF document · Education, experience, and full stack repertoire
               </p>
@@ -138,7 +150,10 @@ function Contact() {
             </div>
             <ul className="flex flex-1 flex-col justify-between divide-y divide-line">
               {links.map((link) => (
-                <li key={link.label} className="flex-1 flex flex-col justify-center">
+                <li
+                  key={link.label}
+                  className="flex-1 flex flex-col justify-center"
+                >
                   <a
                     href={link.href}
                     target="_blank"
@@ -174,7 +189,10 @@ function Contact() {
             <form onSubmit={handleSubmit} className="mt-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="contact-name" className="label-mono mb-1 block text-[10px]">
+                  <label
+                    htmlFor="contact-name"
+                    className="label-mono mb-1 block text-[10px]"
+                  >
                     YOUR NAME
                   </label>
                   <input
@@ -184,13 +202,18 @@ function Contact() {
                     placeholder="Alex"
                     data-crosshair-target
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="contact-email" className="label-mono mb-1 block text-[10px]">
+                  <label
+                    htmlFor="contact-email"
+                    className="label-mono mb-1 block text-[10px]"
+                  >
                     YOUR EMAIL
                   </label>
                   <input
@@ -200,14 +223,19 @@ function Contact() {
                     placeholder="alex@domain.com"
                     data-crosshair-target
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="contact-subject" className="label-mono mb-1 block text-[10px]">
+                <label
+                  htmlFor="contact-subject"
+                  className="label-mono mb-1 block text-[10px]"
+                >
                   SUBJECT
                 </label>
                 <input
@@ -216,13 +244,18 @@ function Contact() {
                   placeholder="Software engineering role / Project"
                   data-crosshair-target
                   value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject: e.target.value })
+                  }
                   className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
                 />
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="label-mono mb-1 block text-[10px]">
+                <label
+                  htmlFor="contact-message"
+                  className="label-mono mb-1 block text-[10px]"
+                >
                   MESSAGE
                 </label>
                 <textarea
@@ -232,7 +265,9 @@ function Contact() {
                   placeholder="Write your note or idea here..."
                   data-crosshair-target
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   className="w-full resize-none rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
                 />
               </div>

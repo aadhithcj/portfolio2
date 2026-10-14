@@ -1,35 +1,80 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from "react";
 
-const LINE_STYLES = ['solid', 'dashed', 'dotted'] as const;
+const LINE_STYLES = ["solid", "dashed", "dotted"] as const;
 type LineStyle = (typeof LINE_STYLES)[number];
 
-const EFFECTS = ['lock', 'glitch', 'none'] as const;
+const EFFECTS = ["lock", "glitch", "none"] as const;
 type TargetEffect = (typeof EFFECTS)[number];
 
-const FONT = '500 10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
-const HIDDEN = 'crosshair-cursor-hidden';
+const FONT =
+  "500 10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const HIDDEN = "crosshair-cursor-hidden";
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
-const toRgb = (ctx: CanvasRenderingContext2D, color: string) => {
-  ctx.fillStyle = '#000';
-  ctx.fillStyle = color;
-  const value = String(ctx.fillStyle);
-  if (value.startsWith('#')) {
-    const hex = parseInt(value.slice(1, 7), 16);
-    return { r: (hex >> 16) & 255, g: (hex >> 8) & 255, b: hex & 255, a: 1 };
+type RgbColor = { r: number; g: number; b: number; a: number };
+
+let colorCanvas: HTMLCanvasElement | null = null;
+let colorCtx: CanvasRenderingContext2D | null = null;
+
+const toRgb = (_ctx: CanvasRenderingContext2D, color: string): RgbColor => {
+  if (typeof window === "undefined") {
+    return { r: 200, g: 245, b: 60, a: 1 };
   }
-  const parts = value.match(/[\d.]+/g)?.map(Number) ?? [255, 255, 255, 1];
-  return {
-    r: parts[0] ?? 255,
-    g: parts[1] ?? 255,
-    b: parts[2] ?? 255,
-    a: parts[3] ?? 1,
-  };
+  let resolved = color;
+  if (color.includes("var(")) {
+    const varName = color.match(/var\(([^)]+)\)/)?.[1]?.trim();
+    if (varName) {
+      resolved =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue(varName)
+          .trim() || color;
+    }
+  }
+
+  // Fast-path 6 or 8-digit hex
+  if (
+    resolved.startsWith("#") &&
+    (resolved.length === 7 || resolved.length === 9)
+  ) {
+    const hex = parseInt(resolved.slice(1, 7), 16);
+    const a =
+      resolved.length === 9 ? parseInt(resolved.slice(7, 9), 16) / 255 : 1;
+    return { r: (hex >> 16) & 255, g: (hex >> 8) & 255, b: hex & 255, a };
+  }
+
+  // Robust pixel sampling for oklch, hsl, rgb, color-mix, etc.
+  try {
+    if (!colorCanvas) {
+      colorCanvas = document.createElement("canvas");
+      colorCanvas.width = 1;
+      colorCanvas.height = 1;
+      colorCtx = colorCanvas.getContext("2d", { willReadFrequently: true });
+    }
+    if (colorCtx) {
+      colorCtx.clearRect(0, 0, 1, 1);
+      colorCtx.fillStyle = resolved;
+      colorCtx.fillRect(0, 0, 1, 1);
+      const data = colorCtx.getImageData(0, 0, 1, 1).data;
+      const r = data[0] ?? 200;
+      const g = data[1] ?? 245;
+      const b = data[2] ?? 60;
+      const a = (data[3] ?? 255) / 255;
+      if (a > 0) {
+        return { r, g, b, a };
+      }
+    }
+  } catch {
+    // fallback
+  }
+
+  return { r: 200, g: 245, b: 60, a: 1 };
 };
 
 export interface CrosshairProps {
   color?: string;
+  coordinatesColor?: string;
   containerRef?: React.RefObject<HTMLElement | null> | null;
   thickness?: number;
   opacity?: number;
@@ -42,27 +87,28 @@ export interface CrosshairProps {
   targetSelector?: string;
   clickPulse?: boolean;
   hideCursor?: boolean;
-  blendMode?: 'normal' | 'difference' | 'screen' | 'overlay';
+  blendMode?: "normal" | "difference" | "screen" | "overlay";
   className?: string;
   style?: CSSProperties;
 }
 
 export default function Crosshair({
-  color = '#9fff5b',
+  color = "#9fff5b",
+  coordinatesColor,
   containerRef = null,
   thickness = 0.5,
   opacity = 0.4,
-  lineStyle = 'dashed',
+  lineStyle = "dashed",
   gap = 3,
   fade = 0,
   smoothing = 0.15,
   showCoordinates = true,
-  targetEffect = 'lock',
-  targetSelector = 'a, button, [data-crosshair-target]',
+  targetEffect = "lock",
+  targetSelector = "a, button, [data-crosshair-target]",
   clickPulse = true,
   hideCursor = false,
-  blendMode = 'difference',
-  className = '',
+  blendMode = "normal",
+  className = "",
   style,
 }: CrosshairProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -70,14 +116,19 @@ export default function Crosshair({
 
   const settings = {
     color,
+    coordinatesColor,
     thickness: clamp(thickness, 0.5, 8),
     opacity: clamp(opacity, 0, 1),
-    lineStyle: LINE_STYLES.includes(lineStyle) ? lineStyle : ('dashed' as LineStyle),
+    lineStyle: LINE_STYLES.includes(lineStyle)
+      ? lineStyle
+      : ("dashed" as LineStyle),
     gap: Math.max(0, gap),
     fade: clamp(fade, 0, 1),
     smoothing: clamp(smoothing, 0, 1),
     showCoordinates,
-    targetEffect: EFFECTS.includes(targetEffect) ? targetEffect : ('lock' as TargetEffect),
+    targetEffect: EFFECTS.includes(targetEffect)
+      ? targetEffect
+      : ("lock" as TargetEffect),
     targetSelector,
     clickPulse,
     hideCursor,
@@ -91,12 +142,13 @@ export default function Crosshair({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
+    const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return undefined;
     const host = containerRef?.current ?? null;
     const scope = host ?? window;
     const cursorOwner = host ?? document.documentElement;
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const reduce =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
     const state = {
       x: 0,
@@ -116,6 +168,12 @@ export default function Crosshair({
     const size = { w: 0, h: 0, dpr: 1 };
     let ink = toRgb(ctx, settingsRef.current.color);
     let inkSource = settingsRef.current.color;
+    let coordsInk = toRgb(
+      ctx,
+      settingsRef.current.coordinatesColor || settingsRef.current.color
+    );
+    let coordsSource =
+      settingsRef.current.coordinatesColor || settingsRef.current.color;
     let raf = 0;
     let last = 0;
     let alive = true;
@@ -130,43 +188,65 @@ export default function Crosshair({
       wake();
     };
 
-    const rgba = (alpha: number) => `rgba(${ink.r}, ${ink.g}, ${ink.b}, ${clamp(alpha * ink.a, 0, 1)})`;
+    const rgba = (alpha: number) =>
+      `rgba(${ink.r}, ${ink.g}, ${ink.b}, ${clamp(alpha * ink.a, 0, 1)})`;
     const crisp = (value: number, w: number) => {
       const device = Math.round(w * size.dpr);
       return (Math.round(value * size.dpr) + (device % 2 ? 0.5 : 0)) / size.dpr;
     };
 
-    const tag = (text: string, x: number, y: number, align: 'center' | 'middle' | 'left') => {
+    const tag = (
+      text: string,
+      x: number,
+      y: number,
+      align: "center" | "middle" | "left"
+    ) => {
+      const prevAlpha = ctx.globalAlpha;
+      ctx.globalAlpha = Math.min(1, Math.max(0.9, state.presence));
       ctx.font = FONT;
       const width = ctx.measureText(text).width + 10;
       const height = 16;
-      let left = align === 'center' ? x - width / 2 : x;
-      let top = align === 'middle' ? y - height / 2 : y;
+      let left = align === "center" ? x - width / 2 : x;
+      let top = align === "middle" ? y - height / 2 : y;
       left = clamp(left, 4, size.w - width - 4);
       top = clamp(top, 4, size.h - height - 4);
-      const light = ink.r * 0.2126 + ink.g * 0.7152 + ink.b * 0.0722 > 150;
-      ctx.fillStyle = rgba(1);
+      const tagRgb = coordsInk;
+      const light =
+        tagRgb.r * 0.2126 + tagRgb.g * 0.7152 + tagRgb.b * 0.0722 > 150;
+      ctx.fillStyle = `rgba(${tagRgb.r}, ${tagRgb.g}, ${tagRgb.b}, ${clamp(tagRgb.a, 0, 1)})`;
       ctx.beginPath();
-      if (typeof (ctx as any).roundRect === 'function') {
-        (ctx as any).roundRect(left, top, width, height, 3);
+      if ("roundRect" in ctx && typeof ctx.roundRect === "function") {
+        ctx.roundRect(left, top, width, height, 3);
       } else {
         ctx.rect(left, top, width, height);
       }
       ctx.fill();
-      ctx.fillStyle = light ? '#0a0a0a' : '#ffffff';
-      ctx.textBaseline = 'middle';
-      ctx.textAlign = 'center';
+      ctx.fillStyle = light ? "#050505" : "#ffffff";
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "center";
       ctx.fillText(text, left + width / 2, top + height / 2 + 0.5);
+      ctx.globalAlpha = prevAlpha;
     };
 
-    const segment = (x1: number, y1: number, x2: number, y2: number, horizontal: boolean, s: typeof settings) => {
+    const segment = (
+      x1: number,
+      y1: number,
+      x2: number,
+      y2: number,
+      horizontal: boolean,
+      s: typeof settings
+    ) => {
       const length = horizontal ? x2 - x1 : y2 - y1;
       if (length <= 0) return;
       if (s.fade > 0) {
         const gradient = horizontal
           ? ctx.createLinearGradient(0, 0, size.w, 0)
           : ctx.createLinearGradient(0, 0, 0, size.h);
-        const at = clamp(horizontal ? state.x / size.w : state.y / size.h, 0.001, 0.999);
+        const at = clamp(
+          horizontal ? state.x / size.w : state.y / size.h,
+          0.001,
+          0.999
+        );
         gradient.addColorStop(0, rgba(1 - s.fade));
         gradient.addColorStop(at, rgba(1));
         gradient.addColorStop(1, rgba(1 - s.fade));
@@ -196,12 +276,18 @@ export default function Crosshair({
       ctx.stroke();
     };
 
-    const brackets = (x: number, y: number, w: number, h: number, alpha: number) => {
+    const brackets = (
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      alpha: number
+    ) => {
       const arm = Math.min(14, w / 3, h / 3);
       ctx.strokeStyle = rgba(alpha);
       ctx.lineWidth = Math.max(1.5, settingsRef.current.thickness);
       ctx.setLineDash([]);
-      ctx.lineCap = 'square';
+      ctx.lineCap = "square";
       ctx.beginPath();
       ctx.moveTo(x, y + arm);
       ctx.lineTo(x, y);
@@ -223,11 +309,14 @@ export default function Crosshair({
       ctx.setTransform(size.dpr, 0, 0, size.dpr, 0, 0);
       ctx.clearRect(0, 0, size.w, size.h);
       if (state.presence > 0.001) {
-        ctx.globalAlpha = state.presence * s.opacity * (1 - 0.6 * state.lock.alpha);
+        ctx.globalAlpha =
+          state.presence * s.opacity * (1 - 0.6 * state.lock.alpha);
         ctx.lineWidth = s.thickness;
-        ctx.lineCap = s.lineStyle === 'dotted' ? 'round' : 'butt';
-        if (s.lineStyle === 'dashed') ctx.setLineDash([s.thickness * 6, s.thickness * 5]);
-        else if (s.lineStyle === 'dotted') ctx.setLineDash([0, s.thickness * 4]);
+        ctx.lineCap = s.lineStyle === "dotted" ? "round" : "butt";
+        if (s.lineStyle === "dashed")
+          ctx.setLineDash([s.thickness * 6, s.thickness * 5]);
+        else if (s.lineStyle === "dotted")
+          ctx.setLineDash([0, s.thickness * 4]);
         else ctx.setLineDash([]);
         const x = crisp(state.x, s.thickness);
         const y = crisp(state.y, s.thickness);
@@ -238,13 +327,19 @@ export default function Crosshair({
         if (s.hideCursor) {
           ctx.fillStyle = rgba(1);
           ctx.beginPath();
-          ctx.arc(state.x, state.y, Math.max(1.5, s.thickness * 1.5), 0, Math.PI * 2);
+          ctx.arc(
+            state.x,
+            state.y,
+            Math.max(1.5, s.thickness * 1.5),
+            0,
+            Math.PI * 2
+          );
           ctx.fill();
         }
         if (s.showCoordinates && state.lock.alpha < 0.999) {
           ctx.globalAlpha = state.presence * s.opacity * (1 - state.lock.alpha);
-          tag(String(Math.round(state.x)), state.x, 8, 'center');
-          tag(String(Math.round(state.y)), 8, state.y, 'middle');
+          tag(String(Math.round(state.x)), state.x, 8, "center");
+          tag(String(Math.round(state.y)), 8, state.y, "middle");
         }
       }
       if (state.lock.alpha > 0.001) {
@@ -253,10 +348,15 @@ export default function Crosshair({
         brackets(x, y, w, h, 1);
         if (s.showCoordinates && state.target) {
           const box = state.target.getBoundingClientRect();
-          tag(`${Math.round(box.width)} × ${Math.round(box.height)}`, x + w / 2, y + h + 8, 'center');
+          tag(
+            `${Math.round(box.width)} × ${Math.round(box.height)}`,
+            x + w / 2,
+            y + h + 8,
+            "center"
+          );
         }
       }
-      state.pulses.forEach(pulse => {
+      state.pulses.forEach((pulse) => {
         const t = pulse.age / 0.55;
         const eased = 1 - (1 - t) ** 3;
         ctx.globalAlpha = (1 - t) ** 2 * s.opacity;
@@ -287,19 +387,35 @@ export default function Crosshair({
         inkSource = s.color;
         ink = toRgb(ctx, s.color);
       }
+      const wantedCoords = s.coordinatesColor || s.color;
+      if (wantedCoords !== coordsSource) {
+        coordsSource = wantedCoords;
+        coordsInk = toRgb(ctx, wantedCoords);
+      }
       const rect = relative();
-      const follow = reduce || s.smoothing === 0 ? 1 : 1 - Math.exp(-dt / (0.008 + s.smoothing * 0.16));
+      const follow =
+        reduce || s.smoothing === 0
+          ? 1
+          : 1 - Math.exp(-dt / (0.008 + s.smoothing * 0.16));
       state.x += (state.tx - state.x) * follow;
       state.y += (state.ty - state.y) * follow;
       const wanted = state.inside ? 1 : 0;
-      state.presence += (wanted - state.presence) * (reduce ? 1 : 1 - Math.exp(-dt / (wanted ? 0.12 : 0.25)));
+      state.presence +=
+        (wanted - state.presence) *
+        (reduce ? 1 : 1 - Math.exp(-dt / (wanted ? 0.12 : 0.25)));
       if (Math.abs(wanted - state.presence) < 0.002) state.presence = wanted;
       const lock = state.lock;
-      const locked = s.targetEffect === 'lock' && state.inside ? state.target : null;
+      const locked =
+        s.targetEffect === "lock" && state.inside ? state.target : null;
       let goal;
       if (locked) {
         const box = locked.getBoundingClientRect();
-        goal = { x: box.left - rect.left - 6, y: box.top - rect.top - 6, w: box.width + 12, h: box.height + 12 };
+        goal = {
+          x: box.left - rect.left - 6,
+          y: box.top - rect.top - 6,
+          w: box.width + 12,
+          h: box.height + 12,
+        };
       } else {
         goal = { x: state.x - 10, y: state.y - 10, w: 20, h: 20 };
       }
@@ -309,17 +425,23 @@ export default function Crosshair({
       lock.w += (goal.w - lock.w) * snap;
       lock.h += (goal.h - lock.h) * snap;
       const shown = locked ? 1 : 0;
-      lock.alpha += (shown - lock.alpha) * (reduce ? 1 : 1 - Math.exp(-dt / (shown ? 0.08 : 0.14)));
+      lock.alpha +=
+        (shown - lock.alpha) *
+        (reduce ? 1 : 1 - Math.exp(-dt / (shown ? 0.08 : 0.14)));
       if (Math.abs(shown - lock.alpha) < 0.002) lock.alpha = shown;
       state.glitch = reduce ? 0 : Math.max(0, state.glitch - dt / 0.5);
-      state.pulses = state.pulses.filter(pulse => (pulse.age += dt) < 0.55);
+      state.pulses = state.pulses.filter((pulse) => (pulse.age += dt) < 0.55);
       draw();
       const settling =
         Math.abs(state.tx - state.x) > 0.05 ||
         Math.abs(state.ty - state.y) > 0.05 ||
         state.presence !== wanted ||
         lock.alpha !== shown ||
-        (locked && Math.abs(goal.w - lock.w) + Math.abs(goal.x - lock.x) + Math.abs(goal.y - lock.y) > 0.1) ||
+        (locked &&
+          Math.abs(goal.w - lock.w) +
+            Math.abs(goal.x - lock.x) +
+            Math.abs(goal.y - lock.y) >
+            0.1) ||
         state.glitch > 0 ||
         state.pulses.length > 0;
       if (settling) raf = requestAnimationFrame(tick);
@@ -343,7 +465,8 @@ export default function Crosshair({
 
     const pick = (element: unknown) => {
       const s = settingsRef.current;
-      if (s.targetEffect === 'none' || !(element instanceof Element)) return null;
+      if (s.targetEffect === "none" || !(element instanceof Element))
+        return null;
       let found: Element | null = null;
       try {
         found = element.closest(s.targetSelector);
@@ -358,7 +481,8 @@ export default function Crosshair({
       const next = pick(element);
       if (next === state.target) return;
       state.target = next;
-      if (next && settingsRef.current.targetEffect === 'glitch') state.glitch = 1;
+      if (next && settingsRef.current.targetEffect === "glitch")
+        state.glitch = 1;
     };
 
     const enter = () => {
@@ -386,7 +510,7 @@ export default function Crosshair({
     const onMove = (event: PointerEvent) => {
       state.clientX = event.clientX;
       state.clientY = event.clientY;
-      if (event.pointerType === 'touch' && event.buttons === 0) return;
+      if (event.pointerType === "touch" && event.buttons === 0) return;
       enter();
       retarget(event.target);
       wake();
@@ -401,7 +525,7 @@ export default function Crosshair({
     };
 
     const onUp = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse') leave();
+      if (event.pointerType !== "mouse") leave();
     };
 
     const onWindowOut = (event: MouseEvent) => {
@@ -416,26 +540,29 @@ export default function Crosshair({
 
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
-    scope.addEventListener('pointermove', onMove as EventListener);
-    scope.addEventListener('pointerdown', onDown as EventListener);
-    window.addEventListener('pointerup', onUp as EventListener);
-    window.addEventListener('pointercancel', onUp as EventListener);
-    window.addEventListener('scroll', onScroll, { capture: true, passive: true });
-    if (host) host.addEventListener('pointerleave', leave);
-    else document.addEventListener('pointerout', onWindowOut);
+    scope.addEventListener("pointermove", onMove as EventListener);
+    scope.addEventListener("pointerdown", onDown as EventListener);
+    window.addEventListener("pointerup", onUp as EventListener);
+    window.addEventListener("pointercancel", onUp as EventListener);
+    window.addEventListener("scroll", onScroll, {
+      capture: true,
+      passive: true,
+    });
+    if (host) host.addEventListener("pointerleave", leave);
+    else document.addEventListener("pointerout", onWindowOut);
     resize();
 
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
       observer.disconnect();
-      scope.removeEventListener('pointermove', onMove as EventListener);
-      scope.removeEventListener('pointerdown', onDown as EventListener);
-      window.removeEventListener('pointerup', onUp as EventListener);
-      window.removeEventListener('pointercancel', onUp as EventListener);
-      window.removeEventListener('scroll', onScroll, { capture: true });
-      if (host) host.removeEventListener('pointerleave', leave);
-      else document.removeEventListener('pointerout', onWindowOut);
+      scope.removeEventListener("pointermove", onMove as EventListener);
+      scope.removeEventListener("pointerdown", onDown as EventListener);
+      window.removeEventListener("pointerup", onUp as EventListener);
+      window.removeEventListener("pointercancel", onUp as EventListener);
+      window.removeEventListener("scroll", onScroll, { capture: true });
+      if (host) host.removeEventListener("pointerleave", leave);
+      else document.removeEventListener("pointerout", onWindowOut);
       setCursorHidden(false);
       wakeRef.current = null;
     };
@@ -449,11 +576,11 @@ export default function Crosshair({
         aria-hidden="true"
         className={className}
         style={{
-          position: containerRef ? 'absolute' : 'fixed',
+          position: containerRef ? "absolute" : "fixed",
           inset: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
           zIndex: 9999,
           mixBlendMode: blendMode,
           ...style,

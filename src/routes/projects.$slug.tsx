@@ -41,7 +41,10 @@ function ProjectPage() {
     <div className="min-h-screen">
       <SiteHeader />
       <main className="page-enter mx-auto max-w-5xl px-6 pb-20 pt-12">
-        <Link to="/projects" className="cursor-target label-mono hover:text-lime">
+        <Link
+          to="/projects"
+          className="cursor-target label-mono hover:text-lime"
+        >
           ← all projects
         </Link>
         <p className="label-mono mt-12">
@@ -69,7 +72,9 @@ function ProjectPage() {
             <p className="label-mono mb-3">technologies</p>
             <ul className="space-y-1 font-mono text-sm">
               {p.stack.map((s) => (
-                <li key={s} className="text-foreground/90">{s}</li>
+                <li key={s} className="text-foreground/90">
+                  {s}
+                </li>
               ))}
             </ul>
           </div>
@@ -90,6 +95,37 @@ function ProjectPage() {
             </ol>
           </div>
         </div>
+
+        {p.researchPaper && (
+          <div className="mt-14 border-t border-line pt-8">
+            <p className="label-mono mb-4 text-lime">
+              # research paper // international conference publication
+            </p>
+            <div className="rounded-xl border border-line bg-surface/60 p-6 backdrop-blur-md">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs font-semibold text-lime">
+                    {p.researchPaper.dates}
+                  </span>
+                  <span className="text-muted-foreground/60">•</span>
+                  <span className="font-mono text-xs text-foreground">
+                    {p.researchPaper.conference}
+                  </span>
+                </div>
+                <span className="label-mono text-xs text-muted-foreground">
+                  {p.researchPaper.location}
+                </span>
+              </div>
+              <h2 className="mt-4 font-display text-2xl text-foreground sm:text-3xl">
+                {p.researchPaper.title}
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                {p.researchPaper.description}
+              </p>
+            </div>
+          </div>
+        )}
+
         <Link
           to="/projects/$slug"
           params={{ slug: next.slug }}

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/projects/")({
       {
         name: "description",
         content:
-          "DevOpsHub, RETINA and other software projects by Aadhith C Joseph.",
+          "Retina, DevOpsHub and other software projects by Aadhith C Joseph.",
       },
       { property: "og:title", content: "Projects — Aadhith C Joseph" },
       {
@@ -66,7 +66,7 @@ function Projects() {
             glowRadius={22}
             glowIntensity={1}
             coneSpread={8}
-            colors={['#9fff5b', '#4ade80', '#22c55e']}
+            colors={["#9fff5b", "#4ade80", "#22c55e"]}
             className="border border-line bg-surface p-5 shadow-xl backdrop-blur-md"
           >
             <p className="label-mono flex items-center justify-between">
@@ -114,4 +114,3 @@ function Projects() {
     </div>
   );
 }
-

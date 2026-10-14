@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
-import TextType from "@/components/fx/TextType";
+import DecryptedText from "@/components/fx/DecryptedText";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -59,11 +59,12 @@ function About() {
       <SiteHeader />
       <main className="page-enter mx-auto max-w-3xl px-6 pb-20 pt-12">
         <p className="label-mono">
-          <TextType
+          <DecryptedText
             text="# README.md"
-            typingSpeed={30}
-            loop={false}
-            showCursor={false}
+            speed={25}
+            sequential
+            animateOn="view"
+            encryptedClassName="text-lime"
           />
         </p>
         <h1 className="mt-4 font-display text-6xl md:text-7xl">
@@ -76,11 +77,12 @@ function About() {
           development, cloud technologies and automation.
         </p>
         <h2 className="label-mono mb-4 mt-16">
-          <TextType
+          <DecryptedText
             text="## toolbox"
-            typingSpeed={30}
-            loop={false}
-            showCursor={false}
+            speed={25}
+            sequential
+            animateOn="view"
+            encryptedClassName="text-lime"
           />
         </h2>
         <dl className="border-t border-line">
@@ -95,11 +97,12 @@ function About() {
           ))}
         </dl>
         <h2 className="label-mono mb-4 mt-16">
-          <TextType
+          <DecryptedText
             text="## log"
-            typingSpeed={30}
-            loop={false}
-            showCursor={false}
+            speed={25}
+            sequential
+            animateOn="view"
+            encryptedClassName="text-lime"
           />
         </h2>
         <ol className="border-t border-line">

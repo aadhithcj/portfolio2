@@ -9,6 +9,7 @@ const INSET = 12;
 const DEFAULT_TAUNTS = ['Catch me', 'Nope', 'Too slow', 'Almost', 'Okay, okay'];
 
 const wallIt = (t: number, room: number, wall: 'clamp' | 'bounce') => {
+  if (room <= 0) return t;
   if (wall === 'bounce') {
     if (t > room) return Math.max(-room, 2 * room - t);
     if (t < -room) return Math.min(room, -2 * room - t);

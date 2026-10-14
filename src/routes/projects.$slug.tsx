@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import TextType from "@/components/fx/TextType";
+import DecryptedText from "@/components/fx/DecryptedText";
 import { projects } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/projects/$slug")({
@@ -44,14 +45,20 @@ function ProjectPage() {
           ← all projects
         </Link>
         <p className="label-mono mt-12">
-          project / {String(index + 1).padStart(2, "0")} — {p.year}
+          <DecryptedText
+            text={`project / ${String(index + 1).padStart(2, "0")} — ${p.year}`}
+            speed={25}
+            sequential
+            animateOn="view"
+            encryptedClassName="text-lime"
+          />
         </p>
         <h1 className="mt-3 font-display text-7xl md:text-9xl">{p.name}</h1>
         <div className="mt-6 max-w-2xl text-xl text-muted-foreground">
           <TextType
             key={p.slug}
             text={p.tagline}
-            typingSpeed={25}
+            typingSpeed={14}
             loop={false}
             showCursor={true}
             cursorCharacter="|"

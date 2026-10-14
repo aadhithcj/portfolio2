@@ -36,10 +36,10 @@ export interface TextTypeProps extends HTMLAttributes<HTMLElement> {
 export default function TextType({
   text,
   as: Component = 'div',
-  typingSpeed = 50,
+  typingSpeed = 16,
   initialDelay = 0,
-  pauseDuration = 2000,
-  deletingSpeed = 30,
+  pauseDuration = 1200,
+  deletingSpeed = 12,
   loop = true,
   className = '',
   showCursor = true,

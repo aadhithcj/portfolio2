@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import TextType from "@/components/fx/TextType";
+import DecryptedText from "@/components/fx/DecryptedText";
+import BorderGlow from "@/components/fx/BorderGlow";
+import SpotlightCard from "@/components/fx/SpotlightCard";
 import { projects } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/projects/")({
@@ -41,7 +44,8 @@ function Projects() {
                 params={{ slug: x.slug }}
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
-                className="cursor-target group grid grid-cols-[3rem_1fr_auto] items-baseline border-b border-line py-4 transition-colors hover:border-lime/60"
+                data-crosshair-target
+                className="group grid grid-cols-[3rem_1fr_auto] items-baseline border-b border-line py-4 transition-colors hover:border-lime/60"
               >
                 <span className="font-mono text-xs text-lime">
                   {String(i + 1).padStart(2, "0")}
@@ -54,38 +58,70 @@ function Projects() {
             </li>
           ))}
         </ol>
-        <aside
-          className="sticky top-8 h-fit border border-line bg-surface/85 p-5 shadow-lg backdrop-blur"
-          aria-live="polite"
-        >
-          <p className="label-mono flex items-center justify-between">
-            <span>preview / {String(active + 1).padStart(2, "0")}</span>
-            <span className="text-lime">●</span>
-          </p>
-          <div className="my-5 grid aspect-square place-items-center border border-line bg-background/50 font-display text-7xl text-lime transition-transform duration-300">
-            {p.name.slice(0, 2)}
-          </div>
-          <div className="min-h-12 text-sm text-foreground">
-            <TextType
-              key={p.slug}
-              text={p.tagline}
-              typingSpeed={25}
-              loop={false}
-              showCursor={true}
-              cursorCharacter="|"
-              className="text-sm leading-relaxed"
-            />
-          </div>
-          <p className="mt-4 border-t border-line/60 pt-3 font-mono text-xs text-muted-foreground">
-            {p.stack.join(" · ")}
-          </p>
-          <Link
-            to="/projects/$slug"
-            params={{ slug: p.slug }}
-            className="cursor-target mt-4 inline-flex items-center gap-2 font-mono text-xs text-lime transition-colors hover:underline"
+        <aside className="sticky top-8 h-fit" aria-live="polite">
+          <BorderGlow
+            edgeSensitivity={30}
+            glowColor="95 100 68"
+            backgroundColor="transparent"
+            borderRadius={18}
+            glowRadius={36}
+            glowIntensity={1.4}
+            coneSpread={28}
+            colors={['#9fff5b', '#4ade80', '#22c55e']}
+            className="border border-line bg-surface/90 p-5 shadow-xl backdrop-blur-md"
           >
-            view case study →
-          </Link>
+            <p className="label-mono flex items-center justify-between">
+              <DecryptedText
+                key={active}
+                text={`preview / ${String(active + 1).padStart(2, "0")}`}
+                speed={25}
+                sequential
+                animateOn="view"
+                className="label-mono"
+                encryptedClassName="text-lime"
+              />
+              <span className="text-lime">●</span>
+            </p>
+
+            <div className="my-5">
+              <SpotlightCard
+                theme="dark"
+                spotlightColor="#9fff5b"
+                intensity={0.28}
+                spotlightSize={180}
+                softness={0.7}
+                shape="circle"
+                borderGlow={0.7}
+                proximity={60}
+                className="grid aspect-square place-items-center !p-0 border border-line bg-background/60 font-display text-7xl text-lime transition-transform duration-300"
+              >
+                <span>{p.name.slice(0, 2)}</span>
+              </SpotlightCard>
+            </div>
+
+            <div className="min-h-12 text-sm text-foreground">
+              <TextType
+                key={p.slug}
+                text={p.tagline}
+                typingSpeed={14}
+                loop={false}
+                showCursor={true}
+                cursorCharacter="|"
+                className="text-sm leading-relaxed"
+              />
+            </div>
+            <p className="mt-4 border-t border-line/60 pt-3 font-mono text-xs text-muted-foreground">
+              {p.stack.join(" · ")}
+            </p>
+            <Link
+              to="/projects/$slug"
+              params={{ slug: p.slug }}
+              data-crosshair-target
+              className="mt-4 inline-flex items-center gap-2 font-mono text-xs text-lime transition-colors hover:underline"
+            >
+              view case study →
+            </Link>
+          </BorderGlow>
         </aside>
       </main>
     </div>

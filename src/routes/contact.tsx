@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
-import TextType from "@/components/fx/TextType";
+import DecryptedText from "@/components/fx/DecryptedText";
 import { profile } from "@/lib/portfolio";
+import { FileText, Send, CheckCircle2, Mail, ExternalLink, ArrowUpRight } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -9,12 +11,12 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact — Aadhith C Joseph" },
       {
         name: "description",
-        content: "Email, GitHub and LinkedIn for Aadhith C Joseph.",
+        content: "Email, GitHub, LinkedIn and direct contact for Aadhith C Joseph.",
       },
       { property: "og:title", content: "Contact — Aadhith C Joseph" },
       {
         property: "og:description",
-        content: "Get in touch with Aadhith C Joseph.",
+        content: "Get in touch with Aadhith C Joseph: full-stack, DevOps and applied AI.",
       },
       { property: "og:image", content: "/og-image.png" },
       { name: "twitter:image", content: "/og-image.png" },
@@ -24,43 +26,232 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=${encodeURIComponent(formData.subject || "Project Collaboration / Inquiry")}&body=${encodeURIComponent(
+    `Hi Aadhith,\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`
+  )}`;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    // Open Gmail compose directly in new tab
+    window.open(gmailComposeUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const directGmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=Hello%20Aadhith`;
+
   const links = [
-    ["email", profile.email, `mailto:${profile.email}`],
-    ["github", "github.com/aadhithcj", profile.github],
-    ["linkedin", "linkedin.com/in/aadhithcj", profile.linkedin],
+    {
+      label: "gmail",
+      value: profile.email,
+      href: directGmailLink,
+      note: "opens gmail compose",
+      isMail: true,
+    },
+    {
+      label: "github",
+      value: "github.com/aadhithcj",
+      href: profile.github,
+      note: "code & repositories",
+      isMail: false,
+    },
+    {
+      label: "linkedin",
+      value: "linkedin.com/in/aadhithcj",
+      href: profile.linkedin,
+      note: "career & networking",
+      isMail: false,
+    },
   ];
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="page-enter mx-auto max-w-5xl px-6 pb-20 pt-16">
+      <main className="page-enter mx-auto max-w-5xl px-6 pb-24 pt-12">
         <p className="label-mono">
-          <TextType
+          <DecryptedText
             text={`contact / ${profile.location}`}
-            typingSpeed={25}
-            loop={false}
-            showCursor={false}
+            speed={25}
+            sequential
+            animateOn="view"
+            encryptedClassName="text-lime"
           />
         </p>
-        <h1 className="mt-4 font-display text-7xl md:text-9xl">
-          Let's build <em className="italic text-lime">something</em>.
+
+        <h1 className="mt-4 font-display text-6xl leading-[1.05] sm:text-7xl md:text-9xl">
+          Let's build <em className="italic text-lime not-italic">something</em>.
         </h1>
-        <ul className="mt-16 border-t border-line">
-          {links.map(([k, v, href]) => (
-            <li key={k}>
-              <a
-                href={href}
-                target={k === "email" ? undefined : "_blank"}
-                rel="noreferrer"
-                className="cursor-target group flex items-baseline justify-between border-b border-line py-6 transition-colors hover:border-lime"
+
+        <p className="mt-6 max-w-2xl font-mono text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Available for software engineering roles, DevOps automation, full-stack systems, or consulting. Drop a message below or reach out directly.
+        </p>
+
+        {/* Resume Card */}
+        <div className="mt-10 flex flex-col justify-between gap-4 rounded-xl border border-line bg-surface/70 p-6 backdrop-blur-md sm:flex-row sm:items-center">
+          <div className="flex items-center gap-4">
+            <div className="grid size-12 place-items-center rounded-lg border border-line bg-background/80 text-lime">
+              <FileText className="size-6" />
+            </div>
+            <div>
+              <p className="font-display text-xl sm:text-2xl">Curriculum Vitae / Resume</p>
+              <p className="font-mono text-xs text-muted-foreground">
+                PDF document · Education, experience, and full stack repertoire
+              </p>
+            </div>
+          </div>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noreferrer"
+            data-crosshair-target
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-lime/60 bg-lime/10 px-5 py-2.5 font-mono text-xs text-lime transition-all hover:bg-lime hover:text-black hover:shadow-lg sm:text-sm"
+          >
+            <span>View Resume (PDF)</span>
+            <ArrowUpRight className="size-4" />
+          </a>
+        </div>
+
+        {/* Two-column layout: Direct Links & Send Message Form */}
+        <div className="mt-16 grid gap-12 lg:grid-cols-2">
+          {/* Direct channels */}
+          <div>
+            <h2 className="label-mono mb-4 text-xs tracking-wider">
+              <DecryptedText
+                text="# DIRECT CHANNELS"
+                speed={25}
+                sequential
+                animateOn="view"
+                encryptedClassName="text-lime"
+              />
+            </h2>
+            <ul className="border-t border-line">
+              {links.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-crosshair-target
+                    className="group flex flex-col border-b border-line py-5 transition-colors hover:border-lime"
+                  >
+                    <div className="flex items-baseline justify-between">
+                      <span className="label-mono">{link.label}</span>
+                      <span className="font-display text-2xl transition-colors group-hover:italic group-hover:text-lime sm:text-3xl">
+                        {link.value} ↗
+                      </span>
+                    </div>
+                    <span className="mt-1 font-mono text-xs text-muted-foreground/70">
+                      {link.note}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 rounded-lg border border-line/60 bg-surface/40 p-4 font-mono text-xs text-muted-foreground">
+              <span className="text-lime">Tip:</span> Clicking the email opens the Gmail web compose interface with recipients prefilled.
+            </div>
+          </div>
+
+          {/* Interactive Message Box */}
+          <div className="rounded-xl border border-line bg-surface/60 p-6 backdrop-blur-md sm:p-8">
+            <div className="flex items-center justify-between border-b border-line/60 pb-4">
+              <div className="flex items-center gap-2">
+                <span className="inline-block size-2 animate-pulse rounded-full bg-lime" />
+                <h3 className="label-mono text-xs">SEND A DIRECT MESSAGE</h3>
+              </div>
+              <Mail className="size-4 text-muted-foreground" />
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <div>
+                <label htmlFor="contact-name" className="label-mono mb-1.5 block text-[11px]">
+                  YOUR NAME
+                </label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  required
+                  placeholder="e.g. Alex Turing"
+                  data-crosshair-target
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="contact-email" className="label-mono mb-1.5 block text-[11px]">
+                  YOUR EMAIL
+                </label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  required
+                  placeholder="alex@domain.com"
+                  data-crosshair-target
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="contact-subject" className="label-mono mb-1.5 block text-[11px]">
+                  SUBJECT
+                </label>
+                <input
+                  id="contact-subject"
+                  type="text"
+                  placeholder="Software engineering role / Project"
+                  data-crosshair-target
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  className="w-full rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="contact-message" className="label-mono mb-1.5 block text-[11px]">
+                  MESSAGE
+                </label>
+                <textarea
+                  id="contact-message"
+                  required
+                  rows={4}
+                  placeholder="Write your note, idea or project details here..."
+                  data-crosshair-target
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full resize-none rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                data-crosshair-target
+                className="group flex w-full items-center justify-center gap-2 rounded-lg border border-lime bg-lime px-4 py-3 font-mono text-xs font-semibold text-black transition-all hover:bg-lime/90 hover:shadow-lg sm:text-sm"
               >
-                <span className="label-mono">{k}</span>
-                <span className="font-display text-2xl transition-colors group-hover:italic group-hover:text-lime md:text-4xl">
-                  {v} ↗
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+                <Send className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <span>SEND MESSAGE VIA GMAIL</span>
+              </button>
+
+              {submitted && (
+                <div className="flex items-center gap-2 rounded-md border border-lime/40 bg-lime/10 p-3 font-mono text-xs text-lime">
+                  <CheckCircle2 className="size-4 shrink-0" />
+                  <span>Gmail compose opened in a new tab with your message pre-formatted!</span>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
       </main>
     </div>
   );

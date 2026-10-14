@@ -11,6 +11,7 @@ import {
 import { type ReactNode } from "react";
 import { ThemeProvider } from "@/hooks/use-theme";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Crosshair from "@/components/fx/Crosshair";
 
 import appCss from "../styles.css?url";
 
@@ -157,6 +158,17 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <ThemeToggle fixed />
+        <Crosshair
+          color="#9fff5b"
+          targetEffect="lock"
+          thickness={0.5}
+          opacity={0.4}
+          smoothing={0.15}
+          showCoordinates
+          lineStyle="dashed"
+          blendMode="difference"
+          gap={3}
+        />
       </QueryClientProvider>
     </ThemeProvider>
   );

@@ -183,13 +183,13 @@ function Index() {
         </div>
 
         {/* Bottom Navigation: 5 items including About */}
-        <nav className="mb-1 sm:mb-1.5 grid w-full h-[76px] sm:h-[80px] grid-cols-2 lg:grid-cols-5 items-center gap-2 sm:gap-2.5 lg:gap-3.5 rounded-2xl border border-line/80 bg-surface/50 p-2 sm:p-2.5 shadow-lg backdrop-blur-md">
+        <nav className="mb-1 sm:mb-1.5 grid w-full grid-cols-1 gap-2 rounded-2xl border border-line/80 bg-surface/50 p-2 shadow-lg backdrop-blur-md sm:grid-cols-2 sm:gap-2.5 sm:p-2.5 lg:grid-cols-5 lg:gap-3.5">
           {nav.map((i) => (
             <Link
               key={i.to}
               to={i.to}
               data-crosshair-target
-              className="group flex h-[58px] sm:h-[62px] items-center justify-between gap-1.5 sm:gap-2 rounded-xl border border-transparent px-2.5 sm:px-3 transition-all duration-200 hover:border-lime/40 hover:bg-surface/90"
+              className="group flex min-h-[58px] items-center justify-between gap-2 rounded-xl border border-transparent px-3 py-2 transition-all duration-200 hover:border-lime/40 hover:bg-surface/90 sm:min-h-[62px] sm:px-3"
             >
               <div className="flex items-center gap-2 shrink-0">
                 <span className="font-mono text-xs text-lime">{i.n}</span>

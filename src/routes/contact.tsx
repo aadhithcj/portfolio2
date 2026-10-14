@@ -83,26 +83,53 @@ function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (status === "loading") return;
 
-    setStatus("loading");
+    const resetFeedback = (delay: number) => {
+      window.setTimeout(() => {
+        setStatus("idle");
+        setFeedback(null);
+      }, delay);
+    };
 
-    setTimeout(() => {
-      const validation = validate();
-      if (!validation.valid) {
-        setStatus("error");
-        setFeedback({ type: "error", message: validation.message });
-        setTimeout(() => setStatus("idle"), 2400);
-      } else {
-        setStatus("success");
-        setFeedback({
-          type: "success",
-          message: "Gmail compose opened in a new tab!",
-        });
-        window.open(gmailComposeUrl, "_blank", "noopener,noreferrer");
-        setTimeout(() => setStatus("idle"), 3000);
-      }
-    }, 300);
+    const validation = validate();
+
+    if (!validation.valid) {
+      setStatus("error");
+      setFeedback({
+        type: "error",
+        message: validation.message,
+      });
+
+      resetFeedback(2400);
+      return;
+    }
+
+    // Open the tab during the user's submit action to avoid popup blockers.
+    const composeWindow = window.open("about:blank", "_blank");
+
+    if (!composeWindow) {
+      setStatus("error");
+      setFeedback({
+        type: "error",
+        message: "Pop-up blocked. Allow pop-ups or use the direct Gmail link.",
+      });
+
+      resetFeedback(3000);
+      return;
+    }
+
+    composeWindow.opener = null;
+    composeWindow.location.href = gmailComposeUrl;
+
+    setStatus("success");
+    setFeedback({
+      type: "success",
+      message: "Gmail opened. Review your message and press Send.",
+    });
+
+    resetFeedback(3000);
   };
 
   const directGmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=Hello%20Aadhith`;

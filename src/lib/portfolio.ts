@@ -10,6 +10,7 @@ export const profile = {
 export type Project = {
   slug: string;
   name: string;
+  category: string;
   year: string;
   stack: string[];
   tagline: string;
@@ -27,6 +28,7 @@ export const projects: Project[] = [
   {
     slug: "retina",
     name: "Retina",
+    category: "AI / COMPUTER VISION",
     year: "2026",
     stack: ["Kotlin", "Android", "Computer Vision"],
     tagline: "An AI assistive Android system for visually impaired users.",
@@ -47,6 +49,7 @@ export const projects: Project[] = [
   {
     slug: "devopshub",
     name: "DevOpsHub",
+    category: "DEVOPS / CI/CD",
     year: "2026",
     stack: [
       "Python",
@@ -67,6 +70,7 @@ export const projects: Project[] = [
   {
     slug: "inventory",
     name: "Inventory System",
+    category: "DESKTOP SOFTWARE",
     year: "2026",
     stack: ["Python", "PyQt6", "SQLite"],
     tagline: "Desktop stock and billing software for a motorbike shop.",
@@ -78,6 +82,7 @@ export const projects: Project[] = [
   {
     slug: "crop-recommendation",
     name: "Crop Recommender",
+    category: "AGRITECH / ML",
     year: "2025",
     stack: ["Python", "Flask", "React"],
     tagline: "Crop suggestions from weather and historical agricultural data.",
@@ -89,6 +94,7 @@ export const projects: Project[] = [
   {
     slug: "cv-sorting",
     name: "CV Sorter",
+    category: "HR TECH / FULL-STACK",
     year: "2024",
     stack: ["React", "Supabase"],
     tagline: "Job posting and resume management with skill-based filtering.",

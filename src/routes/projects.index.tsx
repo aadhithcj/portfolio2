@@ -82,8 +82,14 @@ function Projects() {
               <span className="text-lime">●</span>
             </p>
 
-            <div className="relative z-10 my-5 grid aspect-square place-items-center rounded-lg border border-line bg-surface font-display text-7xl text-lime shadow-sm">
-              {p.name.slice(0, 2)}
+            <div className="my-5">
+              <p className="mb-3 font-mono text-[10px] tracking-[0.18em] text-muted-foreground">
+                {p.category}
+              </p>
+
+              <div className="relative z-10 grid aspect-square place-items-center rounded-lg border border-line bg-surface font-display text-7xl text-lime shadow-sm">
+                {p.name.slice(0, 2)}
+              </div>
             </div>
 
             <div className="min-h-12 text-sm text-foreground">

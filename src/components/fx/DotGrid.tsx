@@ -277,7 +277,7 @@ export default function DotGrid({
     let energy = new Float32Array(0);
     let instances = new Float32Array(0);
     const pointer = { x: 0, y: 0, vx: 0, vy: 0, time: 0, inside: false, presence: 0 };
-    const shocks: { x: number; y: number; start: number }[] = [];
+    const shocks: { x: number; y: number; start: number; radius?: number; strength?: number; travel?: number }[] = [];
     let introStart: number | null = settingsRef.current.intro && !reduced ? -1 : null;
     let visible = true;
     let raf = 0;
@@ -412,11 +412,14 @@ export default function DotGrid({
       const dirX = speed > 0.001 ? pointer.vx / speed : 0;
       const dirY = speed > 0.001 ? pointer.vy / speed : 0;
       const width = grid.cell * 1.4;
-      const travel = 650;
+      const defaultTravel = 650;
       const active = shocks.map(shock => {
+        const travel = shock.travel ?? defaultTravel;
+        const maxRadius = shock.radius ?? s.shockRadius;
+        const strength = shock.strength ?? s.shockStrength;
         const front = ((now - shock.start) / 1000) * travel;
-        const power = smootherstep(1 - front / Math.max(1, s.shockRadius));
-        return { ...shock, front, amplitude: power * s.shockStrength * grid.cell * 0.24 * motion };
+        const power = smootherstep(1 - front / Math.max(1, maxRadius));
+        return { ...shock, front, amplitude: power * strength * grid.cell * 0.28 * motion, maxRadius, travel };
       });
       const coupling = (Math.max(0, s.tension) * 900) ** 2 / (grid.cell * grid.cell);
       const viscosity = Math.sqrt(coupling) * 0.06;
@@ -458,7 +461,7 @@ export default function DotGrid({
             const ny = ey / distance;
             const profile = Math.exp(-u * u);
             const push = shock.amplitude * profile;
-            const rate = ((shock.amplitude * 2 * u * profile) / width) * travel;
+            const rate = ((shock.amplitude * 2 * u * profile) / width) * shock.travel;
             wx += nx * push;
             wy += ny * push;
             wvx += nx * rate;
@@ -552,7 +555,8 @@ export default function DotGrid({
       }
       for (let i = shocks.length - 1; i >= 0; i--) {
         const activeShock = active[i];
-        if (activeShock && activeShock.front > s.shockRadius + width * 3) {
+        const maxR = activeShock?.maxRadius ?? s.shockRadius;
+        if (activeShock && activeShock.front > maxR + width * 4) {
           shocks.splice(i, 1);
         }
       }
@@ -647,10 +651,29 @@ export default function DotGrid({
       wake();
     };
 
+    const onBigPulse = (e: Event) => {
+      const custom = e as CustomEvent<{ x?: number; y?: number }>;
+      const rect = canvas.getBoundingClientRect();
+      const x = custom.detail?.x !== undefined ? custom.detail.x - rect.left : view.width / 2;
+      const y = custom.detail?.y !== undefined ? custom.detail.y - rect.top : view.height / 2;
+      const screenRadius = Math.hypot(view.width || window.innerWidth, view.height || window.innerHeight) * 1.6;
+      shocks.push({
+        x,
+        y,
+        start: performance.now(),
+        radius: screenRadius,
+        strength: 22,
+        travel: 1350,
+      });
+      if (shocks.length > 8) shocks.shift();
+      wake();
+    };
+
     window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('pointerdown', onDown, { passive: true });
     window.addEventListener('pointerout', onOut);
     window.addEventListener('blur', onLeave);
+    window.addEventListener('dotgrid:bigpulse', onBigPulse);
 
     const resizeObserver = new ResizeObserver(() => {
       resize();
@@ -699,6 +722,7 @@ export default function DotGrid({
       window.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointerout', onOut);
       window.removeEventListener('blur', onLeave);
+      window.removeEventListener('dotgrid:bigpulse', onBigPulse);
       document.removeEventListener('visibilitychange', onVisibility);
       gl.deleteBuffer(cornerBuffer);
       gl.deleteBuffer(instanceBuffer);

@@ -126,12 +126,13 @@ function SkillsPage() {
             return (
               <BorderGlow
                 key={cat.id}
-                edgeSensitivity={26}
+                edgeSensitivity={4}
                 glowColor="95 100 68"
                 backgroundColor="transparent"
-                borderRadius={16}
-                glowRadius={32}
-                glowIntensity={1.3}
+                borderRadius={15}
+                glowRadius={22}
+                glowIntensity={1}
+                coneSpread={8}
                 colors={['#9fff5b', '#34d399', '#a3e635']}
                 className="border border-line bg-surface/75 p-6 backdrop-blur-md transition-shadow hover:shadow-xl"
               >

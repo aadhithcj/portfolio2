@@ -1,12 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import DotGrid from "@/components/fx/DotGrid";
 import TechText from "@/components/fx/TechText";
 import TextType from "@/components/fx/TextType";
 import DecryptedText from "@/components/fx/DecryptedText";
 import { useTheme } from "@/hooks/use-theme";
 import { profile } from "@/lib/portfolio";
-import { Activity } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,17 +28,10 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const MODES = [
-  { label: "STANDARD RESONANCE", tag: "GRID: 1.0X", shock: 5.5, bounce: 0.65, tension: 0.4, swell: 0.85 },
-  { label: "OVERCLOCK BURST", tag: "GRID: 3.2X", shock: 9.5, bounce: 0.88, tension: 0.65, swell: 1.1 },
-  { label: "ZERO-G FLUID", tag: "GRAVITY: NULL", shock: 3.5, bounce: 0.25, tension: 0.18, swell: 0.6 },
-  { label: "CYBER MATRIX", tag: "FREQ: 120Hz", shock: 11.0, bounce: 1.15, tension: 0.85, swell: 1.3 },
-] as const;
-
 const nav = [
   { to: "/projects", n: "01", label: "Projects", note: "Selected work" },
   { to: "/skills", n: "02", label: "Skills", note: "Tech & tools" },
-  { to: "/log", n: "03", label: "Log", note: "Timeline archive" },
+  { to: "/log", n: "03", label: "Log", note: "Timeline" },
   { to: "/contact", n: "04", label: "Contact", note: "Say hello" },
 ] as const;
 
@@ -48,39 +39,17 @@ function Index() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const [modeIndex, setModeIndex] = useState(0);
-  const [hudBadge, setHudBadge] = useState<string | null>(null);
-  const [spinDegree, setSpinDegree] = useState(0);
-
-  const activeMode = MODES[modeIndex] ?? MODES[0];
-
-  const handleSquareClick = (e: React.MouseEvent) => {
-    const nextIdx = (modeIndex + 1) % MODES.length;
-    setModeIndex(nextIdx);
-    setSpinDegree((prev) => prev + 180);
-    const chosen = MODES[nextIdx] ?? MODES[0];
-    setHudBadge(`${chosen.label} [${chosen.tag}]`);
-
-    // Staggered multi-shockwave burst across canvas
-    [0, 100, 220].forEach((delay) => {
-      setTimeout(() => {
-        const ev = new PointerEvent("pointerdown", {
-          clientX: e.clientX + (Math.random() - 0.5) * 80,
-          clientY: e.clientY + (Math.random() - 0.5) * 80,
-          bubbles: true,
-        });
-        window.dispatchEvent(ev);
-      }, delay);
-    });
-
-    setTimeout(() => {
-      setHudBadge(null);
-    }, 2400);
+  const triggerScreenPulse = (e: React.MouseEvent) => {
+    window.dispatchEvent(
+      new CustomEvent("dotgrid:bigpulse", {
+        detail: { x: e.clientX, y: e.clientY },
+      })
+    );
   };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background">
-      {/* Interactive WebGL2 DotGrid Background with dynamic physics modes */}
+      {/* Interactive WebGL2 DotGrid Background */}
       <div className="pointer-events-none fixed inset-0 z-0 opacity-80 transition-opacity duration-500">
         <DotGrid
           baseColor={isDark ? "#282533" : "#d8d8de"}
@@ -90,12 +59,12 @@ function Index() {
           gap={18}
           proximity={150}
           strength={1.2}
-          bounce={activeMode.bounce}
-          tension={activeMode.tension}
+          bounce={0.65}
+          tension={0.4}
           returnDuration={0.8}
           shockRadius={320}
-          shockStrength={activeMode.shock}
-          swell={activeMode.swell}
+          shockStrength={5.5}
+          swell={0.85}
           stretch={0.5}
           glow={isDark ? 0.6 : 0.25}
           fade={0.15}
@@ -106,7 +75,7 @@ function Index() {
         />
       </div>
 
-      <div className="page-enter relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col justify-between px-6 py-8">
+      <div className="page-enter relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col justify-between px-6 py-8">
         {/* Header bar */}
         <div className="flex items-center justify-between border-b border-line/60 pb-4 label-mono">
           <div className="flex items-center gap-3">
@@ -121,13 +90,6 @@ function Index() {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Dynamic System HUD notice when button is clicked */}
-            {hudBadge && (
-              <span className="flex items-center gap-1.5 rounded-full border border-lime/60 bg-lime/10 px-3 py-1 font-mono text-[11px] text-lime shadow-sm animate-in fade-in zoom-in-95">
-                <Activity className="size-3 animate-spin" />
-                <span>{hudBadge}</span>
-              </span>
-            )}
             <TextType
               text={profile.location}
               typingSpeed={16}
@@ -141,7 +103,7 @@ function Index() {
         {/* Hero Section - fully left aligned */}
         <div className="my-auto py-8">
           <div className="w-full max-w-4xl">
-            {/* Top row with subhead and interactive rotating square mark */}
+            {/* Top row with subhead and square button triggering screen-wide big pulse */}
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2 label-mono">
                 <DecryptedText
@@ -167,20 +129,16 @@ function Index() {
                 <button
                   type="button"
                   data-crosshair-target
-                  aria-label="Cycle system resonance mode & trigger shockwave"
-                  onClick={handleSquareClick}
-                  className="group relative grid size-9 place-items-center rounded-md border border-line bg-surface/85 font-display text-xl text-lime shadow-md backdrop-blur transition-all duration-300 hover:border-lime hover:bg-surface focus-visible:outline-2 focus-visible:outline-lime md:size-10 md:text-2xl"
+                  aria-label="Trigger screen-wide pulse"
+                  onClick={triggerScreenPulse}
+                  className="group grid size-9 place-items-center rounded-sm border border-line bg-surface/85 font-display text-xl text-lime shadow-md backdrop-blur transition-all duration-300 hover:rotate-45 hover:border-lime hover:bg-surface focus-visible:outline-2 focus-visible:outline-lime md:size-10 md:text-2xl"
                 >
-                  <span
-                    style={{ transform: `rotate(${spinDegree}deg)` }}
-                    className="inline-block transition-transform duration-500 ease-out group-hover:scale-115"
-                  >
+                  <span className="transition-transform duration-300 group-hover:scale-110">
                     ◆
                   </span>
-                  <span className="absolute -bottom-1 -right-1 size-2 rounded-full bg-lime/80 shadow-[0_0_8px_#9fff5b]" />
                 </button>
                 <span className="hidden label-mono text-[10px] text-muted-foreground/80 sm:inline-block">
-                  mode: {activeMode.tag}
+                  screen pulse
                 </span>
               </div>
             </div>
@@ -226,22 +184,24 @@ function Index() {
           </div>
         </div>
 
-        {/* Bottom Navigation with side margins, rounded corners and hover DecryptedText */}
-        <nav className="my-2 grid rounded-2xl border border-line/80 bg-surface/50 p-2 shadow-lg backdrop-blur-md sm:grid-cols-2 md:grid-cols-4 md:gap-3 md:p-3">
+        {/* Bottom Navigation: expanded width (max-w-6xl) so every text fits on one line */}
+        <nav className="my-2 grid w-full rounded-2xl border border-line/80 bg-surface/50 p-2 shadow-lg backdrop-blur-md sm:grid-cols-2 lg:grid-cols-4 lg:gap-3 lg:p-3">
           {nav.map((i) => (
             <Link
               key={i.to}
               to={i.to}
               data-crosshair-target
-              className="group flex items-baseline gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 hover:border hover:border-lime/40 hover:bg-surface/90"
+              className="group flex items-baseline justify-between gap-3 rounded-xl px-4 py-3.5 whitespace-nowrap transition-all duration-200 hover:border hover:border-lime/40 hover:bg-surface/90"
             >
-              <span className="font-mono text-xs text-lime transition-transform duration-200 group-hover:translate-x-0.5">
-                {i.n}
-              </span>
-              <span className="font-display text-xl transition-all group-hover:italic group-hover:text-lime sm:text-2xl">
-                {i.label}
-              </span>
-              <span className="ml-auto label-mono text-[11px] transition-colors group-hover:text-foreground">
+              <div className="flex items-baseline gap-2.5">
+                <span className="font-mono text-xs text-lime transition-transform duration-200 group-hover:translate-x-0.5">
+                  {i.n}
+                </span>
+                <span className="font-display text-xl transition-all group-hover:italic group-hover:text-lime sm:text-2xl">
+                  {i.label}
+                </span>
+              </div>
+              <span className="label-mono text-[11px] transition-colors group-hover:text-foreground">
                 <DecryptedText
                   text={`${i.note} →`}
                   speed={25}

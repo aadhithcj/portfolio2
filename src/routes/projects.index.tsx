@@ -4,7 +4,6 @@ import { SiteHeader } from "@/components/SiteHeader";
 import TextType from "@/components/fx/TextType";
 import DecryptedText from "@/components/fx/DecryptedText";
 import BorderGlow from "@/components/fx/BorderGlow";
-import SpotlightCard from "@/components/fx/SpotlightCard";
 import { projects } from "@/lib/portfolio";
 
 export const Route = createFileRoute("/projects/")({
@@ -60,13 +59,13 @@ function Projects() {
         </ol>
         <aside className="sticky top-8 h-fit" aria-live="polite">
           <BorderGlow
-            edgeSensitivity={30}
+            edgeSensitivity={4}
             glowColor="95 100 68"
             backgroundColor="transparent"
-            borderRadius={18}
-            glowRadius={36}
-            glowIntensity={1.4}
-            coneSpread={28}
+            borderRadius={15}
+            glowRadius={22}
+            glowIntensity={1}
+            coneSpread={8}
             colors={['#9fff5b', '#4ade80', '#22c55e']}
             className="border border-line bg-surface/90 p-5 shadow-xl backdrop-blur-md"
           >
@@ -83,20 +82,8 @@ function Projects() {
               <span className="text-lime">●</span>
             </p>
 
-            <div className="my-5">
-              <SpotlightCard
-                theme="dark"
-                spotlightColor="#9fff5b"
-                intensity={0.28}
-                spotlightSize={180}
-                softness={0.7}
-                shape="circle"
-                borderGlow={0.7}
-                proximity={60}
-                className="grid aspect-square place-items-center !p-0 border border-line bg-background/60 font-display text-7xl text-lime transition-transform duration-300"
-              >
-                <span>{p.name.slice(0, 2)}</span>
-              </SpotlightCard>
+            <div className="my-5 grid aspect-square place-items-center border border-line bg-background/50 font-display text-7xl text-lime transition-transform duration-300">
+              {p.name.slice(0, 2)}
             </div>
 
             <div className="min-h-12 text-sm text-foreground">

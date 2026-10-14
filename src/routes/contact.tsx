@@ -119,7 +119,7 @@ function Contact() {
         </div>
 
         {/* Two-column layout: Direct Links & Send Message Form */}
-        <div className="mt-16 grid gap-12 lg:grid-cols-2">
+        <div className="mt-16 grid items-start gap-10 lg:grid-cols-2">
           {/* Direct channels */}
           <div>
             <h2 className="label-mono mb-4 text-xs tracking-wider">
@@ -139,7 +139,7 @@ function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     data-crosshair-target
-                    className="group flex flex-col border-b border-line py-5 transition-colors hover:border-lime"
+                    className="group flex flex-col border-b border-line py-4 transition-colors hover:border-lime"
                   >
                     <div className="flex items-baseline justify-between">
                       <span className="label-mono">{link.label}</span>
@@ -147,22 +147,18 @@ function Contact() {
                         {link.value} ↗
                       </span>
                     </div>
-                    <span className="mt-1 font-mono text-xs text-muted-foreground/70">
+                    <span className="mt-0.5 font-mono text-xs text-muted-foreground/70">
                       {link.note}
                     </span>
                   </a>
                 </li>
               ))}
             </ul>
-
-            <div className="mt-8 rounded-lg border border-line/60 bg-surface/40 p-4 font-mono text-xs text-muted-foreground">
-              <span className="text-lime">Tip:</span> Clicking the email opens the Gmail web compose interface with recipients prefilled.
-            </div>
           </div>
 
-          {/* Interactive Message Box */}
-          <div className="rounded-xl border border-line bg-surface/60 p-6 backdrop-blur-md sm:p-8">
-            <div className="flex items-center justify-between border-b border-line/60 pb-4">
+          {/* Interactive Message Box - sized to match left channels */}
+          <div className="rounded-xl border border-line bg-surface/60 p-5 backdrop-blur-md">
+            <div className="flex items-center justify-between border-b border-line/60 pb-3">
               <div className="flex items-center gap-2">
                 <span className="inline-block size-2 animate-pulse rounded-full bg-lime" />
                 <h3 className="label-mono text-xs">SEND A DIRECT MESSAGE</h3>
@@ -170,41 +166,43 @@ function Contact() {
               <Mail className="size-4 text-muted-foreground" />
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-              <div>
-                <label htmlFor="contact-name" className="label-mono mb-1.5 block text-[11px]">
-                  YOUR NAME
-                </label>
-                <input
-                  id="contact-name"
-                  type="text"
-                  required
-                  placeholder="e.g. Alex Turing"
-                  data-crosshair-target
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
-                />
+            <form onSubmit={handleSubmit} className="mt-4 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="contact-name" className="label-mono mb-1 block text-[10px]">
+                    YOUR NAME
+                  </label>
+                  <input
+                    id="contact-name"
+                    type="text"
+                    required
+                    placeholder="Alex"
+                    data-crosshair-target
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="contact-email" className="label-mono mb-1 block text-[10px]">
+                    YOUR EMAIL
+                  </label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    required
+                    placeholder="alex@domain.com"
+                    data-crosshair-target
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="contact-email" className="label-mono mb-1.5 block text-[11px]">
-                  YOUR EMAIL
-                </label>
-                <input
-                  id="contact-email"
-                  type="email"
-                  required
-                  placeholder="alex@domain.com"
-                  data-crosshair-target
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="contact-subject" className="label-mono mb-1.5 block text-[11px]">
+                <label htmlFor="contact-subject" className="label-mono mb-1 block text-[10px]">
                   SUBJECT
                 </label>
                 <input
@@ -214,39 +212,39 @@ function Contact() {
                   data-crosshair-target
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                  className="w-full rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
                 />
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="label-mono mb-1.5 block text-[11px]">
+                <label htmlFor="contact-message" className="label-mono mb-1 block text-[10px]">
                   MESSAGE
                 </label>
                 <textarea
                   id="contact-message"
                   required
-                  rows={4}
-                  placeholder="Write your note, idea or project details here..."
+                  rows={2}
+                  placeholder="Write your note or idea here..."
                   data-crosshair-target
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full resize-none rounded-md border border-line bg-background/80 px-3.5 py-2.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
+                  className="w-full resize-none rounded-md border border-line bg-background/80 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:border-lime focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
                 data-crosshair-target
-                className="group flex w-full items-center justify-center gap-2 rounded-lg border border-lime bg-lime px-4 py-3 font-mono text-xs font-semibold text-black transition-all hover:bg-lime/90 hover:shadow-lg sm:text-sm"
+                className="group flex w-full items-center justify-center gap-2 rounded-md border border-lime bg-lime px-3 py-2 font-mono text-xs font-semibold text-black transition-all hover:bg-lime/90 hover:shadow-md"
               >
-                <Send className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <Send className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 <span>SEND MESSAGE VIA GMAIL</span>
               </button>
 
               {submitted && (
-                <div className="flex items-center gap-2 rounded-md border border-lime/40 bg-lime/10 p-3 font-mono text-xs text-lime">
-                  <CheckCircle2 className="size-4 shrink-0" />
-                  <span>Gmail compose opened in a new tab with your message pre-formatted!</span>
+                <div className="flex items-center gap-2 rounded-md border border-lime/40 bg-lime/10 p-2.5 font-mono text-[11px] text-lime">
+                  <CheckCircle2 className="size-3.5 shrink-0" />
+                  <span>Gmail compose opened in a new tab!</span>
                 </div>
               )}
             </form>

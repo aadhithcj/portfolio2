@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const links = [
   { to: "/about", label: "about" },
@@ -10,14 +11,20 @@ const links = [
 
 export function SiteHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-6">
-      <Link
-        to="/"
-        data-crosshair-target
-        className="w-fit rounded-sm font-mono text-sm text-foreground transition-colors hover:text-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-4 focus-visible:ring-offset-background"
-      >
-        <span className="text-lime">◆</span> acj / portfolio
-      </Link>
+    <header className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-6">
+      <div className="flex w-full items-center justify-between sm:w-auto">
+        <Link
+          to="/"
+          data-crosshair-target
+          className="w-fit rounded-sm font-mono text-sm text-foreground transition-colors hover:text-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+        >
+          <span className="text-lime">◆</span> acj / portfolio
+        </Link>
+
+        <div className="sm:hidden">
+          <ThemeToggle />
+        </div>
+      </div>
 
       <nav
         aria-label="Primary navigation"

@@ -5,6 +5,7 @@ import TextType from "@/components/fx/TextType";
 import DecryptedText from "@/components/fx/DecryptedText";
 import { useTheme } from "@/hooks/use-theme";
 import { profile } from "@/lib/portfolio";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -90,14 +91,19 @@ function Index() {
             />
           </div>
 
-          <div className="flex items-center gap-4">
-            <TextType
-              text={profile.location}
-              typingSpeed={16}
-              loop={false}
-              showCursor={false}
-              className="hidden text-muted-foreground sm:inline-block"
-            />
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:inline-block">
+              <TextType
+                text={profile.location}
+                typingSpeed={16}
+                loop={false}
+                showCursor={false}
+                className="text-muted-foreground"
+              />
+            </div>
+            <div className="sm:hidden">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
 

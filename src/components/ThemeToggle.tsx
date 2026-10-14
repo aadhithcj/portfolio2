@@ -90,10 +90,12 @@ export function ThemeToggle({
     showToast(targetMode, 1400);
   };
 
-  // Fixed top-right wrapper
+  // Fixed top-right wrapper (desktop only so it doesn't block mobile headers)
   const wrapperClass = fixed
-    ? "fixed top-4 right-8 sm:top-6 sm:right-16 z-50 flex items-center justify-center pointer-events-auto"
+    ? "hidden sm:flex fixed sm:top-6 sm:right-10 md:right-16 z-50 items-center justify-center pointer-events-auto"
     : `relative flex items-center justify-center ${className}`.trim();
+
+  const isCompact = !fixed;
 
   return (
     <div className={wrapperClass}>
@@ -103,11 +105,11 @@ export function ThemeToggle({
           <div
             role="status"
             aria-live="polite"
-            className="pointer-events-none absolute -bottom-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-surface/95 px-3 py-1 font-mono text-[11px] font-medium text-foreground shadow-xl backdrop-blur-md transition-all duration-200 animate-in fade-in zoom-in-95 z-30"
+            className="pointer-events-none absolute top-full mt-2 sm:top-auto sm:-bottom-11 right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-surface/95 px-2.5 py-0.5 sm:px-3 sm:py-1 font-mono text-[10px] sm:text-[11px] font-medium text-foreground shadow-xl backdrop-blur-md transition-all duration-200 animate-in fade-in zoom-in-95 z-50"
           >
             <span className="mr-1 text-lime">◆</span>
             {toast}
-            <span className="absolute -top-1 left-1/2 -translate-x-1/2 size-2 rotate-45 border-t border-l border-line bg-surface" />
+            <span className="absolute -top-1 right-3 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 size-2 rotate-45 border-t border-l border-line bg-surface" />
           </div>
         )}
 
@@ -118,12 +120,24 @@ export function ThemeToggle({
           onClick={handleToggle}
           data-crosshair-target
           aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-          className="group relative grid size-[54px] place-items-center rounded-full border border-line bg-surface/90 text-foreground shadow-xl backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className={`group relative grid ${
+            isCompact ? "size-9" : "size-[52px]"
+          } place-items-center rounded-full border border-line bg-surface/90 text-foreground ${
+            isCompact ? "shadow-sm" : "shadow-xl"
+          } backdrop-blur-md transition-all duration-200 hover:scale-105 hover:border-lime focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
         >
           {isDark ? (
-            <Sun className="size-5 text-lime transition-transform duration-300 group-hover:rotate-45" />
+            <Sun
+              className={`${
+                isCompact ? "size-4" : "size-5"
+              } text-lime transition-transform duration-300 group-hover:rotate-45`}
+            />
           ) : (
-            <Moon className="size-5 text-lime transition-transform duration-300 group-hover:-rotate-12" />
+            <Moon
+              className={`${
+                isCompact ? "size-4" : "size-5"
+              } text-lime transition-transform duration-300 group-hover:-rotate-12`}
+            />
           )}
         </button>
       </div>

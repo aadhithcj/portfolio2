@@ -30,7 +30,7 @@ const hubs = [
     to: "/projects",
     icon: FolderGit2,
     title: "Featured Projects",
-    desc: "Retina, DevOpsHub, Inventory System, and CV Sorter case studies.",
+    desc: "Retina, DevOpsHub, Inventory System, Roots, and CV Management System case studies.",
   },
   {
     to: "/skills",

@@ -120,7 +120,7 @@ const categories: SkillCategory[] = [
       },
     ],
     project: {
-      name: "CV Sorter",
+      name: "CV Management System",
       slug: "cv-sorting",
       description:
         "Web interface and database-backed resume screening platform.",

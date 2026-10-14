@@ -12,6 +12,7 @@ import {
   Compass,
   Activity,
   Zap,
+  GraduationCap,
 } from "lucide-react";
 
 interface RetinaCaseStudyProps {
@@ -68,6 +69,15 @@ export function RetinaCaseStudy({
           </span>
           <span className="rounded-lg border border-lime/30 bg-lime/10 px-3 py-2 font-mono text-xs text-lime">
             ICFISN 2026 Presentation
+          </span>
+        </div>
+
+        {/* Academic Context Badge */}
+        <div className="mt-4 inline-flex items-center gap-2 rounded-md border border-line/70 bg-surface/50 px-3 py-1.5 font-mono text-xs text-muted-foreground">
+          <GraduationCap className="size-3.5 text-lime" aria-hidden="true" />
+          <span>
+            B.Tech CSE Final Project · APJ Abdul Kalam Technological University
+            (KTU)
           </span>
         </div>
       </header>

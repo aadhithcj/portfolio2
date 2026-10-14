@@ -5,6 +5,9 @@ import DecryptedText from "@/components/fx/DecryptedText";
 import { projects } from "@/lib/portfolio";
 import { RetinaCaseStudy } from "@/components/projects/RetinaCaseStudy";
 import { DevOpsHubCaseStudy } from "@/components/projects/DevOpsHubCaseStudy";
+import { InventoryCaseStudy } from "@/components/projects/InventoryCaseStudy";
+import { RootsCaseStudy } from "@/components/projects/RootsCaseStudy";
+import { CvSorterCaseStudy } from "@/components/projects/CvSorterCaseStudy";
 
 export const Route = createFileRoute("/projects/$slug")({
   loader: ({ params }) => {
@@ -66,6 +69,12 @@ function ProjectPage() {
           <RetinaCaseStudy project={p} previous={previous} next={next} />
         ) : p.slug === "devopshub" ? (
           <DevOpsHubCaseStudy project={p} previous={previous} next={next} />
+        ) : p.slug === "inventory" ? (
+          <InventoryCaseStudy project={p} previous={previous} next={next} />
+        ) : p.slug === "crop-recommendation" ? (
+          <RootsCaseStudy project={p} previous={previous} next={next} />
+        ) : p.slug === "cv-sorting" ? (
+          <CvSorterCaseStudy project={p} previous={previous} next={next} />
         ) : (
           <>
             {/* Project introduction */}

@@ -44,12 +44,20 @@ function Projects() {
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 data-crosshair-target
-                className="group grid grid-cols-[3rem_1fr_auto] items-baseline border-b border-line py-4 transition-colors hover:border-lime/60"
+                className={`group grid grid-cols-[3rem_1fr_auto] items-baseline border-b py-4 transition-colors duration-200 hover:border-lime/60 ${
+                  active === i ? "border-lime/50 bg-surface/40" : "border-line"
+                }`}
               >
                 <span className="font-mono text-xs text-lime">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="font-display text-4xl transition-all duration-200 group-hover:translate-x-2 group-hover:italic group-hover:text-lime md:text-6xl">
+                <span
+                  className={`font-display text-4xl transition-all duration-200 md:text-6xl ${
+                    active === i
+                      ? "translate-x-2 italic text-lime"
+                      : "group-hover:translate-x-2 group-hover:italic group-hover:text-lime"
+                  }`}
+                >
                   {x.name}
                 </span>
                 <span className="label-mono">{x.year}</span>
